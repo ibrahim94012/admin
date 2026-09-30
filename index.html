@@ -514,6 +514,18 @@
     background: var(--crimson-tint); padding: 3px 10px; border-radius: 999px; margin-bottom: 10px;
   }
 
+  .cropRatioPicker { display: flex; gap: 8px; margin: 0 0 12px; }
+  .cropRatioBtn {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 6px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-md); background: #fff; color: var(--muted);
+    font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .cropRatioBtn .rIcon { display: block; border: 2px solid currentColor; border-radius: 3px; }
+  .cropRatioBtn[data-r="1:1"] .rIcon { width: 18px; height: 18px; }
+  .cropRatioBtn[data-r="9:16"] .rIcon { width: 14px; height: 24px; }
+  .cropRatioBtn[data-r="16:9"] .rIcon { width: 26px; height: 15px; }
+  .cropRatioBtn.active { border-color: var(--crimson); background: var(--crimson-tint); color: var(--crimson); }
+
   .toast {
     position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px); z-index: 800;
     background: var(--ink); color: #fff; font-size: 13px; font-weight: 600; padding: 12px 20px; border-radius: 999px;
@@ -1002,7 +1014,12 @@
     </div>
     <div class="modalBoxBody">
       <span class="cropRatioTag" id="cropRatioTag"><i class="fa-solid fa-crop-simple" aria-hidden="true"></i> <span></span></span>
-      <p class="cropHint">ছবির উপর বক্সটি টেনে (ড্র্যাগ করে) সরান, কোণা ধরে টেনে ছোট-বড় করুন — নির্বাচিত অংশটুকুই নির্ধারিত মাপে ক্রপ হবে।</p>
+      <div class="cropRatioPicker" id="cropRatioPicker">
+        <button type="button" class="cropRatioBtn" data-r="1:1"><span class="rIcon"></span>১:১</button>
+        <button type="button" class="cropRatioBtn" data-r="9:16"><span class="rIcon"></span>৯:১৬</button>
+        <button type="button" class="cropRatioBtn" data-r="16:9"><span class="rIcon"></span>১৬:৯</button>
+      </div>
+      <p class="cropHint">ছবির উপর বক্সটি টেনে (ড্র্যাগ করে) সরান, কোণা ধরে টেনে ছোট-বড় করুন — নির্বাচিত অংশটুকুই নির্বাচিত অনুপাতে (১:১, ৯:১৬ বা ১৬:৯) ক্রপ হবে।</p>
       <div class="cropStage" id="cropStage">
         <img id="cropImage" alt="">
         <div class="cropSelection" id="cropSelection">
@@ -1130,14 +1147,39 @@ const IMAGE_CROP_CONFIG = {
 };
 function gcdInt(a, b) { return b ? gcdInt(b, a % b) : a; }
 /* Adds the derived values: ratio, exact output width/height and a readable label. */
+/* তিনটি ক্রপ অনুপাত — ব্যবহারকারী আপলোডের সময় বেছে নেয় */
+const CROP_RATIOS = {
+  "1:1":  { w: 1,  h: 1  },
+  "9:16": { w: 9,  h: 16 },
+  "16:9": { w: 16, h: 9  }
+};
+/* ফিল্ডের নিজস্ব আকারের সবচেয়ে কাছের অনুপাতটি ডিফল্ট হিসেবে ধরা হয় */
+function defaultRatioKey(c) {
+  const r = c.displayW / c.displayH;
+  let best = "1:1", bd = Infinity;
+  Object.keys(CROP_RATIOS).forEach(k => {
+    const d = Math.abs(Math.log(r / (CROP_RATIOS[k].w / CROP_RATIOS[k].h)));
+    if (d < bd) { bd = d; best = k; }
+  });
+  return best;
+}
+/* নির্বাচিত অনুপাত অনুযায়ী আউটপুট মাপ ও লেবেল বসায় */
+function applyRatioToConfig(cfg, ratioKey) {
+  const rr = CROP_RATIOS[ratioKey] || CROP_RATIOS["1:1"];
+  const long = Math.min(1600, Math.max(600, Math.round(Math.max(cfg.baseW, cfg.baseH))));
+  let width, height;
+  if (rr.w === rr.h) { width = height = Math.min(long, 1200); }
+  else if (rr.w > rr.h) { width = long; height = Math.round(long * rr.h / rr.w); }
+  else { height = long; width = Math.round(long * rr.w / rr.h); }
+  cfg.ratioKey = ratioKey; cfg.ratio = rr.w / rr.h; cfg.width = width; cfg.height = height; cfg.ratioText = ratioKey;
+  cfg.tag = cfg.label + " — " + ratioKey + " · " + width + "×" + height + "px";
+  return cfg;
+}
 function resolveCropConfig(key) {
   const c = IMAGE_CROP_CONFIG[key] || IMAGE_CROP_CONFIG._default;
   if (c.free) return Object.assign({}, c, { key: key });
-  const width = Math.round(c.displayW * c.scale), height = Math.round(c.displayH * c.scale);
-  const g = gcdInt(c.displayW, c.displayH);
-  const ratioText = (c.displayW / g) + ":" + (c.displayH / g);
-  return Object.assign({}, c, { key: key, ratio: c.displayW / c.displayH, width: width, height: height, ratioText: ratioText,
-    tag: c.label + " — " + ratioText + " · " + width + "×" + height + "px" });
+  const cfg = Object.assign({}, c, { key: key, baseW: c.displayW * c.scale, baseH: c.displayH * c.scale });
+  return applyRatioToConfig(cfg, defaultRatioKey(c));
 }
 
 function formatBytes(n) {
@@ -1299,6 +1341,7 @@ function cropImageFile(file, cropKey) {
         cropNaturalW = cropImageEl.naturalWidth;
         cropNaturalH = cropImageEl.naturalHeight;
         cropRatioLabelEl.textContent = cfg.tag;
+        syncCropRatioPicker();
         cropModalOverlay.classList.add("show");
         // measure after the modal is visible so layout/dimensions are correct
         requestAnimationFrame(() => initCropSelection(cfg.ratio));
@@ -1307,6 +1350,21 @@ function cropImageFile(file, cropKey) {
     }).catch(() => { showToast("ফাইলটি পড়া যায়নি"); settleCrop(null); });
   });
 }
+
+function syncCropRatioPicker() {
+  document.querySelectorAll("#cropRatioPicker .cropRatioBtn").forEach(btn => {
+    btn.classList.toggle("active", !!cropConfig && btn.getAttribute("data-r") === cropConfig.ratioKey);
+  });
+}
+document.querySelectorAll("#cropRatioPicker .cropRatioBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (!cropConfig) return;
+    applyRatioToConfig(cropConfig, btn.getAttribute("data-r"));
+    cropRatioLabelEl.textContent = cropConfig.tag;
+    syncCropRatioPicker();
+    initCropSelection(cropConfig.ratio);
+  });
+});
 
 window.addEventListener("resize", () => {
   if (cropModalOverlay.classList.contains("show") && cropConfig) {
@@ -1655,6 +1713,18 @@ function renderStepsLists() {
   stepListHtml("processStepsDonor", "listStepDonor");
 }
 
+/* সর্বশেষ রক্তদানের তারিখ অনুযায়ী পুরনো → নতুন ক্রম (তারিখ সমান হলে ID ক্রমে) */
+function donationDateCompare(a, b) {
+  const ta = new Date(a && a.date).getTime(), tb = new Date(b && b.date).getTime();
+  const va = isNaN(ta) ? -Infinity : ta, vb = isNaN(tb) ? -Infinity : tb;
+  if (va !== vb) return va < vb ? -1 : 1;
+  return donationNoNum(a && a.donationNo) - donationNoNum(b && b.donationNo);
+}
+function donationSerialMap() {
+  const m = new Map();
+  landingData.donationRecords.slice().sort(donationDateCompare).forEach((r, i) => m.set(r, i + 1));
+  return m;
+}
 let donationSearchTerm = "";
 function renderDonationsList() {
   const el = document.getElementById("listDonations");
@@ -1667,10 +1737,9 @@ function renderDonationsList() {
       (r.hospitalName || "").toLowerCase().includes(q)
     );
   }
-  // largest donation number first
-  records = records.slice().sort((a, b) => {
-    return donationNoNum(b.donationNo) - donationNoNum(a.donationNo);
-  });
+  // সর্বশেষ রক্তদানের তারিখ অনুযায়ী: সবচেয়ে নতুন উপরে, সবচেয়ে পুরনো সবার নিচে
+  const serialMap = donationSerialMap();
+  records = records.slice().sort((a, b) => donationDateCompare(b, a));
   if (!records.length) {
     el.innerHTML = emptyStateHtml("fa-hand-holding-droplet", donationSearchTerm ? "কোনো রেকর্ড খুঁজে পাওয়া যায়নি" : "এখনও কোনো রেকর্ড যোগ করা হয়নি");
   } else {
@@ -1679,7 +1748,7 @@ function renderDonationsList() {
       '<div class="donationList">' +
       records.map((r, idx) =>
         '<div class="donationRow' + (idx === 0 ? ' topRow' : '') + '">' +
-          '<div class="donationRank">' + (idx === 0 ? '<i class="fa-solid fa-crown" aria-hidden="true"></i>' : (idx + 1)) + '</div>' +
+          '<div class="donationRank">' + (idx === 0 ? '<i class="fa-solid fa-crown" aria-hidden="true"></i>' : (serialMap.get(r) || idx + 1)) + '</div>' +
           '<div class="rowThumb">' + (r.image && !r.hidePhoto ? '<img src="' + escAttr(r.image) + '" alt="">' : '<i class="fa-solid fa-user" aria-hidden="true"></i>') + '</div>' +
           '<div class="donationNoBadge">#' + escHtml(r.donationNo) + '</div>' +
           '<div class="donationInfo"><b>' + escHtml(r.name) + '</b><span class="hosp"><i class="fa-solid fa-hospital" aria-hidden="true"></i>' + escHtml(r.hospitalName || "—") + '</span></div>' +
