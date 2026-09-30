@@ -228,6 +228,15 @@
     display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 20px; overflow: hidden; flex-shrink: 0;
   }
   .imgUploadPreview img { width: 100%; height: 100%; object-fit: cover; }
+  .imgUploadPreview { position: relative; }
+  .imgUploadPreview.isUploading::after {
+    content: ""; position: absolute; inset: 0; background: rgba(255,255,255,0.78);
+  }
+  .imgUploadPreview.isUploading::before {
+    content: ""; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; z-index: 1;
+    border-radius: 50%; border: 3px solid var(--crimson-tint); border-top-color: var(--crimson); animation: adminSpin .8s linear infinite;
+  }
+  @keyframes adminSpin { to { transform: rotate(360deg); } }
   .imgUploadBtns { display: flex; gap: 8px; flex-wrap: wrap; }
 
   .contactPhotoGrid {
@@ -236,7 +245,7 @@
   }
   .contactPhotoGrid > div { flex: 1 1 220px; }
   .contactPhotoLabel { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
-  .contactPhotoGrid .imgUploadPreview { aspect-ratio: 9 / 16; width: 56px; height: auto; }
+  .contactPhotoGrid .imgUploadPreview { aspect-ratio: 1 / 1; width: 56px; height: auto; }
 
   /* ---- calling card panel: one neat, self-contained block per contact ---- */
   .ccHint { font-size: 12.5px; color: var(--muted); margin: -8px 0 20px; line-height: 1.65; max-width: 640px; }
@@ -255,7 +264,7 @@
   }
   .ccContactBody { display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap; }
   .ccPhoto { flex: 0 0 auto; width: 104px; display: flex; flex-direction: column; align-items: stretch; gap: 9px; }
-  .ccPhoto .imgUploadPreview { width: 100%; aspect-ratio: 9 / 16; height: auto; border-radius: var(--radius-md); }
+  .ccPhoto .imgUploadPreview { width: 100%; aspect-ratio: 1 / 1; height: auto; border-radius: var(--radius-md); }
   .ccPhoto .imgUploadBtns { flex-direction: column; }
   .ccPhoto .btn.small { width: 100%; justify-content: center; }
   .ccFields { flex: 1 1 320px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }
@@ -469,6 +478,37 @@
   .cropHandle.tr { top: -8px; right: -8px; cursor: nesw-resize; }
   .cropHandle.bl { bottom: -8px; left: -8px; cursor: nesw-resize; }
   .cropHandle.br { bottom: -8px; right: -8px; cursor: nwse-resize; }
+  .cropPreviewRow {
+    display: flex; align-items: center; gap: 14px; margin-top: 12px; padding: 12px;
+    border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--cream);
+  }
+  #cropPreviewCanvas { display: block; flex-shrink: 0; background: #fff; border: 1px solid var(--line); }
+  #cropPreviewCanvas.shape-circle { border-radius: 50%; }
+  #cropPreviewCanvas.shape-rounded { border-radius: 14px; }
+  .cropInfo { font-size: 12px; color: var(--muted); line-height: 1.65; min-width: 0; }
+  .cropInfo b { color: var(--ink); }
+  .cropInfo .warn { display: block; color: #B26A00; font-weight: 700; margin-top: 4px; }
+  #cropConfirmBtn.isBusy { pointer-events: none; opacity: 0.7; }
+  @media (pointer: coarse) {
+    .cropHandle { width: 26px; height: 26px; border-radius: 6px; }
+    .cropHandle.tl { top: -14px; left: -14px; } .cropHandle.tr { top: -14px; right: -14px; }
+    .cropHandle.bl { bottom: -14px; left: -14px; } .cropHandle.br { bottom: -14px; right: -14px; }
+  }
+  @media (max-width: 480px) { .cropStage { height: 300px; } }
+  /* ---- রিপোর্টের ছবি (সংবাদ) ---- */
+  .reportImgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+  .reportImgItem { position: relative; aspect-ratio: 3 / 4; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; background: var(--cream); }
+  .reportImgItem img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .reportImgItem .reportImgDel {
+    position: absolute; top: 5px; right: 5px; width: 26px; height: 26px; border: none; border-radius: 50%; cursor: pointer;
+    background: rgba(0,0,0,0.65); color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .reportImgAdd {
+    aspect-ratio: 3 / 4; border: 1.5px dashed var(--line); border-radius: var(--radius-md); background: var(--cream); color: var(--crimson);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 700; cursor: pointer;
+  }
+  .reportImgAdd i { font-size: 20px; }
+  .reportImgAdd.isUploading { pointer-events: none; opacity: 0.7; }
   .cropRatioTag {
     display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; color: var(--crimson);
     background: var(--crimson-tint); padding: 3px 10px; border-radius: 999px; margin-bottom: 10px;
@@ -559,11 +599,10 @@
       <button type="button" class="navItem" data-panel="steps"><i class="fa-solid fa-list-ol" aria-hidden="true"></i> ধাপসমূহ</button>
 
       <div class="sidebarGroupLabel">তথ্য ব্যবস্থাপনা</div>
-      <button type="button" class="navItem" data-panel="news"><i class="fa-solid fa-book-open" aria-hidden="true"></i> ব্লগ <span class="navBadge" id="navBadgeNews">0</span></button>
+      <button type="button" class="navItem" data-panel="news"><i class="fa-solid fa-newspaper" aria-hidden="true"></i> সংবাদ <span class="navBadge" id="navBadgeNews">0</span></button>
       <button type="button" class="navItem" data-panel="hospitals"><i class="fa-solid fa-hospital" aria-hidden="true"></i> হাসপাতাল <span class="navBadge" id="navBadgeHospitals">0</span></button>
       <button type="button" class="navItem" data-panel="team"><i class="fa-solid fa-users" aria-hidden="true"></i> টিম <span class="navBadge" id="navBadgeTeam">0</span></button>
       <button type="button" class="navItem" data-panel="faq"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> FAQ <span class="navBadge" id="navBadgeFaq">0</span></button>
-      <button type="button" class="navItem" data-panel="testimonials"><i class="fa-solid fa-quote-left" aria-hidden="true"></i> সফলতার গল্প <span class="navBadge" id="navBadgeTestimonials">0</span></button>
       <button type="button" class="navItem" data-panel="partners"><i class="fa-solid fa-handshake" aria-hidden="true"></i> সহযোগী <span class="navBadge" id="navBadgePartners">0</span></button>
       <button type="button" class="navItem" data-panel="donations"><i class="fa-solid fa-hand-holding-droplet" aria-hidden="true"></i> ডোনেশন রেকর্ড <span class="navBadge" id="navBadgeDonations">0</span></button>
       <button type="button" class="navItem" data-panel="gallery"><i class="fa-solid fa-image" aria-hidden="true"></i> গ্যালারি <span class="navBadge" id="navBadgeGallery">0</span></button>
@@ -626,9 +665,8 @@
         <div class="card">
           <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> কনটেন্ট সারাংশ</h3>
           <div class="quickList">
-            <div class="quickRow"><span class="dot"></span> <b id="qlNews">0টি</b> ব্লগ পোস্ট প্রকাশিত আছে</div>
+            <div class="quickRow"><span class="dot"></span> <b id="qlNews">0টি</b> সংবাদ প্রকাশিত আছে</div>
             <div class="quickRow"><span class="dot"></span> <b id="qlFaq">0টি</b> FAQ প্রশ্ন প্রকাশিত আছে</div>
-            <div class="quickRow"><span class="dot"></span> <b id="qlTestimonials">0টি</b> সফলতার গল্প যোগ করা আছে</div>
             <div class="quickRow"><span class="dot"></span> <b id="qlPartners">0টি</b> সহযোগী প্রতিষ্ঠান তালিকাভুক্ত</div>
             <div class="quickRow"><span class="dot"></span> <b id="qlGallery">0টি</b> ছবি গ্যালারিতে আছে</div>
           </div>
@@ -767,8 +805,8 @@
       <!-- ============ NEWS / BLOG ============ -->
       <section class="panel" data-panel="news">
         <div class="panelHead">
-          <div><h2>ব্লগ / আর্টিকেল</h2><p>রক্তদান নিয়ে স্বাস্থ্য টিপস, মিথ ভাঙা লেখা ও ঘোষণা — নতুনটি সবার আগে দেখা যাবে।</p></div>
-          <button type="button" class="btn primary" data-add-item="news"><i class="fa-solid fa-plus" aria-hidden="true"></i> নতুন পোস্ট যোগ করুন</button>
+          <div><h2>সংবাদ</h2><p>গত মাসের কার্যক্রম, ডোনেশন হিস্ট্রি (রিপোর্টের ছবি সহ), স্বাস্থ্য টিপস ও ঘোষণা — নতুনটি সবার আগে দেখা যাবে।</p></div>
+          <button type="button" class="btn primary" data-add-item="news"><i class="fa-solid fa-plus" aria-hidden="true"></i> নতুন সংবাদ যোগ করুন</button>
         </div>
         <div id="listNews" class="partnerGrid"></div>
       </section>
@@ -798,15 +836,6 @@
           <button type="button" class="btn primary" data-add-item="faq"><i class="fa-solid fa-plus" aria-hidden="true"></i> নতুন প্রশ্ন যোগ করুন</button>
         </div>
         <div id="listFaq"></div>
-      </section>
-
-      <!-- ============ TESTIMONIALS ============ -->
-      <section class="panel" data-panel="testimonials">
-        <div class="panelHead">
-          <div><h2>সফলতার গল্প</h2><p>রক্তদাতা বা প্রাপকের অভিজ্ঞতা।</p></div>
-          <button type="button" class="btn primary" data-add-item="testimonial"><i class="fa-solid fa-plus" aria-hidden="true"></i> নতুন গল্প যোগ করুন</button>
-        </div>
-        <div id="listTestimonials"></div>
       </section>
 
       <!-- ============ PARTNERS ============ -->
@@ -962,8 +991,8 @@
   </div>
 </div>
 
-<input type="file" id="hiddenFileInput" accept="image/*" style="display:none;">
-<input type="file" id="galleryBulkFileInput" accept="image/*" multiple style="display:none;">
+<input type="file" id="hiddenFileInput" accept="image/jpeg,image/png,image/webp" style="display:none;">
+<input type="file" id="galleryBulkFileInput" accept="image/jpeg,image/png,image/webp" multiple style="display:none;">
 
 <div class="modalOverlay" id="cropModalOverlay">
   <div class="modalBox cropModalBox">
@@ -984,10 +1013,14 @@
           <div class="cropHandle br" data-h="br"></div>
         </div>
       </div>
+      <div class="cropPreviewRow">
+        <canvas id="cropPreviewCanvas" aria-label="ক্রপের লাইভ প্রিভিউ"></canvas>
+        <div class="cropInfo" id="cropInfo"></div>
+      </div>
     </div>
     <div class="modalBoxFoot">
       <button type="button" class="btn" id="cropCancelBtn">বাতিল</button>
-      <button type="button" class="btn primary" id="cropConfirmBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> ক্রপ করে আপলোড করুন</button>
+      <button type="button" class="btn primary" id="cropConfirmBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> <span>ক্রপ করে আপলোড করুন</span></button>
     </div>
   </div>
 </div>
@@ -1007,20 +1040,29 @@ let db, auth, donorsRef, appConfigRef, landingPageRef, visitorRef;
    uploaded to Google Drive through a small Apps Script Web App —
    Firebase only ever stores the returned Drive URL as plain text. */
 const DRIVE_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbwY4KBfermnTNqa_4Z_HNFp0SK2Jf81a2pXwRNINLP-tfVpkxi0wxo04XIBoVKdtkA-dw/exec";
-function uploadImageToDrive(base64DataUrl, fileName) {
+/* The Apps Script verifies this Firebase ID token, so only a logged-in
+   admin can upload (see apps-script/Code.gs). */
+function getAdminIdToken() {
+  if (!auth || !auth.currentUser) return Promise.resolve("");
+  return auth.currentUser.getIdToken().catch(() => "");
+}
+function postToDriveUploader(payload) {
   if (!DRIVE_UPLOAD_URL || DRIVE_UPLOAD_URL.indexOf("PASTE_YOUR") === 0) {
     return Promise.reject(new Error("Drive upload URL not configured"));
   }
-  return fetch(DRIVE_UPLOAD_URL, {
+  return getAdminIdToken().then(idToken => fetch(DRIVE_UPLOAD_URL, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ image: base64DataUrl, name: fileName })
-  })
+    body: JSON.stringify(Object.assign({ idToken: idToken }, payload))
+  }))
     .then(res => res.json())
     .then(data => {
       if (!data || !data.ok || !data.url) throw new Error((data && data.error) || "Invalid response from Drive uploader");
-      return data.url;
+      return data;
     });
+}
+function uploadImageToDrive(base64DataUrl, fileName) {
+  return postToDriveUploader({ kind: "image", image: base64DataUrl, name: fileName }).then(data => data.url);
 }
 function readAndResizeImageFile(file, maxDim) {
   return new Promise((resolve, reject) => {
@@ -1053,20 +1095,73 @@ function readAndResizeImageFile(file, maxDim) {
    width:height ratio; the file picked by the user is always
    cropped to that exact ratio (and output size) before upload.
    ============================================================ */
-const IMAGE_CROP_CONFIG = {
-  heroBackgroundImage: { ratio: 16 / 9, width: 1600, height: 900, label: "হিরো ব্যাকগ্রাউন্ড — 16:9" },
-  aboutImage:          { ratio: 4 / 5,  width: 800,  height: 1000, label: "আমরা কারা ছবি — 4:5" },
-  impactImage:         { ratio: 4 / 3,  width: 1000, height: 750, label: "ইমপ্যাক্ট ছবি — 4:3" },
-  contactPhoto1:       { ratio: 9 / 16, width: 720,  height: 1280, label: "কলিং কার্ড ছবি ১ — 9:16" },
-  contactPhoto2:       { ratio: 9 / 16, width: 720,  height: 1280, label: "কলিং কার্ড ছবি ২ — 9:16" },
-  contactPhoto3:       { ratio: 9 / 16, width: 720,  height: 1280, label: "কলিং কার্ড ছবি ৩ — 9:16" },
-  photo:                { ratio: 1,     width: 600,  height: 600, label: "টিম সদস্যের ছবি — 1:1" },
-  logo:                 { ratio: 1,     width: 500,  height: 500, label: "প্রতিষ্ঠানের লোগো — 1:1" },
-  image:                { ratio: 1,     width: 600,  height: 600, label: "ডোনেশন রেকর্ড ছবি — 1:1" },
-  src:                  { ratio: 4 / 3, width: 1000, height: 750, label: "গ্যালারি ছবি — 4:3" },
-  newsImage:            { ratio: 16 / 9, width: 1280, height: 720, label: "ব্লগ পোস্টের ছবি — 16:9" },
-  _default:             { ratio: 1,     width: 800,  height: 800, label: "ছবি — 1:1" }
+/* ------------------------------------------------------------------
+   CENTRAL IMAGE / PDF CONFIG — the only place to change a field's crop
+   ratio, output size, or the upload limits.
+   displayW x displayH = the size (CSS px) the image is actually shown at
+   on the public site (its largest use). The crop ratio is displayW:displayH
+   and the exported file is displayW*scale x displayH*scale px (scale 2-3 =
+   sharp on retina screens). shape only changes the live-preview mask.
+   Field keys: scalar fields use their own key; fields inside the item
+   modal use "<schema>.<field>" (e.g. "team.photo").
+   ------------------------------------------------------------------ */
+const IMAGE_UPLOAD_RULES = {
+  allowedTypes: ["image/jpeg", "image/png", "image/webp"],
+  allowedExt: ["jpg", "jpeg", "png", "webp"],
+  maxBytes: 10 * 1024 * 1024,   // 10 MB (the original file, before cropping)
+  jpegQuality: 0.9
 };
+const MAX_REPORT_IMAGES = 6;   // সংবাদ প্রতি রিপোর্টের ছবির সর্বোচ্চ সংখ্যা
+const IMAGE_CROP_CONFIG = {
+  heroBackgroundImage:  { displayW: 960,  displayH: 540, scale: 2, shape: "rect",    label: "হিরো ব্যাকগ্রাউন্ড", note: "ফুল-উইডথ ব্যাকগ্রাউন্ড — ছোট স্ক্রিনে দুই পাশ কাটা পড়তে পারে" },
+  aboutImage:           { displayW: 320,  displayH: 320, scale: 2, shape: "rect",    label: "আমরা কারা ছবি" },
+  impactImage:          { displayW: 1120, displayH: 250, scale: 2, shape: "rect",    label: "ইমপ্যাক্ট / CTA ব্যান্ড", note: "চওড়া ব্যান্ড — মোবাইলে দুই পাশ কাটা পড়ে, গুরুত্বপূর্ণ অংশ মাঝখানে রাখুন" },
+  contactPhoto1:        { displayW: 76,   displayH: 76,  scale: 3, shape: "rounded", label: "কলিং কার্ড ছবি ১" },
+  contactPhoto2:        { displayW: 76,   displayH: 76,  scale: 3, shape: "rounded", label: "কলিং কার্ড ছবি ২" },
+  contactPhoto3:        { displayW: 76,   displayH: 76,  scale: 3, shape: "rounded", label: "কলিং কার্ড ছবি ৩" },
+  "team.photo":         { displayW: 114,  displayH: 114, scale: 3, shape: "circle",  label: "টিম সদস্যের ছবি" },
+  "partner.logo":       { displayW: 78,   displayH: 78,  scale: 3, shape: "circle",  label: "সহযোগীর লোগো" },
+  "donationRecord.image": { displayW: 300, displayH: 300, scale: 2, shape: "rect",   label: "ডোনেশন রেকর্ড ছবি" },
+  "galleryPhoto.src":   { displayW: 356,  displayH: 356, scale: 2, shape: "rect",    label: "গ্যালারি ছবি", note: "প্রতি ৪টির ১টি ঘর লম্বা — সেখানে মাঝের অংশ দেখা যায়" },
+  "news.newsImage":     { displayW: 240,  displayH: 240, scale: 2, shape: "rect",    label: "সংবাদের থাম্বনেইল" },
+  /* free:true = ক্রপ ছাড়াই পুরো ছবি (রিপোর্ট/ডকুমেন্টের ছবি কাটা যাবে না); বড় দিক maxSide px-এ ছোট করা হয় */
+  "news.reportImages":  { free: true, maxSide: 1600, label: "রিপোর্টের ছবি" },
+  _default:             { displayW: 400,  displayH: 400, scale: 2, shape: "rect",    label: "ছবি" }
+};
+function gcdInt(a, b) { return b ? gcdInt(b, a % b) : a; }
+/* Adds the derived values: ratio, exact output width/height and a readable label. */
+function resolveCropConfig(key) {
+  const c = IMAGE_CROP_CONFIG[key] || IMAGE_CROP_CONFIG._default;
+  if (c.free) return Object.assign({}, c, { key: key });
+  const width = Math.round(c.displayW * c.scale), height = Math.round(c.displayH * c.scale);
+  const g = gcdInt(c.displayW, c.displayH);
+  const ratioText = (c.displayW / g) + ":" + (c.displayH / g);
+  return Object.assign({}, c, { key: key, ratio: c.displayW / c.displayH, width: width, height: height, ratioText: ratioText,
+    tag: c.label + " — " + ratioText + " · " + width + "×" + height + "px" });
+}
+
+function formatBytes(n) {
+  return n >= 1024 * 1024 ? (n / (1024 * 1024)).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1024)) + " KB";
+}
+/* Returns an error message (Bengali) or null when the image file is acceptable. */
+function validateImageFile(file) {
+  if (!file) return "ফাইল পাওয়া যায়নি";
+  const ext = ((file.name || "").split(".").pop() || "").toLowerCase();
+  const typeOk = IMAGE_UPLOAD_RULES.allowedTypes.indexOf(file.type) !== -1 ||
+    (!file.type && IMAGE_UPLOAD_RULES.allowedExt.indexOf(ext) !== -1);
+  if (!typeOk) return "শুধু JPG, PNG বা WebP ছবি দেওয়া যাবে";
+  if (file.size === 0) return "ফাইলটি খালি";
+  if (file.size > IMAGE_UPLOAD_RULES.maxBytes) return "ছবির সাইজ সর্বোচ্চ " + formatBytes(IMAGE_UPLOAD_RULES.maxBytes) + " — আপনার ফাইল " + formatBytes(file.size);
+  return null;
+}
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onerror = () => reject(new Error("Could not read file"));
+    r.onload = () => resolve(r.result);
+    r.readAsDataURL(file);
+  });
+}
 
 const cropModalOverlay = document.getElementById("cropModalOverlay");
 const cropStageBox = document.getElementById("cropStage");
@@ -1090,11 +1185,49 @@ let cropStageRect = null, cropStartPX = 0, cropStartPY = 0;
 let cropStartSelX = 0, cropStartSelY = 0, cropStartSelW = 0, cropStartSelH = 0;
 let cropAnchorX = 0, cropAnchorY = 0;
 
+const cropPreviewCanvas = document.getElementById("cropPreviewCanvas");
+const cropInfoEl = document.getElementById("cropInfo");
+let cropPreviewQueued = false;
+
+/* Source-image rectangle (natural px) that the current selection box covers. */
+function currentCropSourceRect() {
+  const scale = cropNaturalW / imgDispW;
+  return { x: (selX - imgOffX) * scale, y: (selY - imgOffY) * scale, w: selW * scale, h: selH * scale };
+}
+
+/* Live preview: redraws the exact crop (in the field's display ratio and
+   mask shape) on every drag / resize, plus output size + quality hint. */
+function updateCropPreview() {
+  cropPreviewQueued = false;
+  if (!cropConfig || !imgDispW) return;
+  const maxSide = 132, r = cropConfig.ratio;
+  const cssW = r >= 1 ? maxSide : Math.round(maxSide * r);
+  const cssH = r >= 1 ? Math.round(maxSide / r) : maxSide;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cropPreviewCanvas.style.width = cssW + "px";
+  cropPreviewCanvas.style.height = cssH + "px";
+  cropPreviewCanvas.width = Math.round(cssW * dpr);
+  cropPreviewCanvas.height = Math.round(cssH * dpr);
+  cropPreviewCanvas.className = "shape-" + (cropConfig.shape || "rect");
+  const ctx = cropPreviewCanvas.getContext("2d");
+  if (!ctx) return;
+  const src = currentCropSourceRect();
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, cropPreviewCanvas.width, cropPreviewCanvas.height);
+  ctx.drawImage(cropImageEl, src.x, src.y, src.w, src.h, 0, 0, cropPreviewCanvas.width, cropPreviewCanvas.height);
+  const low = src.w < cropConfig.width * 0.75 || src.h < cropConfig.height * 0.75;
+  cropInfoEl.innerHTML = "<b>প্রিভিউ</b> — সাইটে এভাবেই দেখাবে<br>আউটপুট: " + cropConfig.width + "×" + cropConfig.height + "px" +
+    "<br>নির্বাচিত অংশ: " + Math.round(src.w) + "×" + Math.round(src.h) + "px" +
+    (cropConfig.note ? "<br>" + escHtml(cropConfig.note) : "") +
+    (low ? '<span class="warn"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> ছবির রেজোলিউশন কম — ঝাপসা দেখাতে পারে</span>' : "");
+}
+
 function applyCropSelectionStyle() {
   cropSelectionEl.style.left = selX + "px";
   cropSelectionEl.style.top = selY + "px";
   cropSelectionEl.style.width = selW + "px";
   cropSelectionEl.style.height = selH + "px";
+  if (!cropPreviewQueued) { cropPreviewQueued = true; requestAnimationFrame(updateCropPreview); }
 }
 
 function measureImageBox() {
@@ -1118,7 +1251,10 @@ function initCropSelection(ratio) {
 
 function closeCropModal() {
   cropModalOverlay.classList.remove("show");
+  cropImageEl.onload = null;
+  cropImageEl.onerror = null;
   cropImageEl.removeAttribute("src");
+  cropConfig = null;
 }
 function settleCrop(result) {
   const r = cropResolveFn;
@@ -1127,28 +1263,56 @@ function settleCrop(result) {
   if (r) r(result);
 }
 
-/** Opens the crop modal for `file`, resolves with a cropped JPEG data URL
- *  matching cfg.width x cfg.height, or resolves with null if cancelled. */
-function cropImageFile(file, cfg) {
+/** Validates `file`, opens the crop modal locked to the ratio of `cropKey`
+ *  (see IMAGE_CROP_CONFIG) and resolves with a cropped JPEG data URL of the
+ *  exact output size, or null if the file is invalid / unreadable / cancelled. */
+function cropImageFile(file, cropKey) {
   return new Promise(resolve => {
+    const problem = validateImageFile(file);
+    if (problem) { showToast(problem); resolve(null); return; }
+    const cfg = resolveCropConfig(cropKey);
+    if (cfg.free) {                       // পুরো ছবি রাখা হয়, শুধু বড় হলে ছোট করা হয়
+      readFileAsDataUrl(file).then(dataUrl => {
+        const im = new Image();
+        im.onerror = () => { showToast("ছবিটি পড়া যায়নি — ফাইলটি নষ্ট বা অসমর্থিত হতে পারে"); resolve(null); };
+        im.onload = () => {
+          const k = Math.min(1, cfg.maxSide / Math.max(im.naturalWidth, im.naturalHeight));
+          const cv = document.createElement("canvas");
+          cv.width = Math.max(1, Math.round(im.naturalWidth * k));
+          cv.height = Math.max(1, Math.round(im.naturalHeight * k));
+          const cx = cv.getContext("2d");
+          if (!cx) { showToast("এই ব্রাউজারে ছবি প্রসেস করা যাচ্ছে না"); resolve(null); return; }
+          cx.fillStyle = "#fff"; cx.fillRect(0, 0, cv.width, cv.height);
+          cx.imageSmoothingQuality = "high";
+          cx.drawImage(im, 0, 0, cv.width, cv.height);
+          resolve(cv.toDataURL("image/jpeg", IMAGE_UPLOAD_RULES.jpegQuality));
+        };
+        im.src = dataUrl;
+      }).catch(() => { showToast("ফাইলটি পড়া যায়নি"); resolve(null); });
+      return;
+    }
     cropResolveFn = resolve;
-    const reader = new FileReader();
-    reader.onerror = () => settleCrop(null);
-    reader.onload = () => {
+    readFileAsDataUrl(file).then(dataUrl => {
+      cropImageEl.onerror = () => { showToast("ছবিটি পড়া যায়নি — ফাইলটি নষ্ট বা অসমর্থিত হতে পারে"); settleCrop(null); };
       cropImageEl.onload = () => {
         cropConfig = cfg;
         cropNaturalW = cropImageEl.naturalWidth;
         cropNaturalH = cropImageEl.naturalHeight;
-        cropRatioLabelEl.textContent = cfg.label;
+        cropRatioLabelEl.textContent = cfg.tag;
         cropModalOverlay.classList.add("show");
         // measure after the modal is visible so layout/dimensions are correct
         requestAnimationFrame(() => initCropSelection(cfg.ratio));
       };
-      cropImageEl.src = reader.result;
-    };
-    reader.readAsDataURL(file);
+      cropImageEl.src = dataUrl;
+    }).catch(() => { showToast("ফাইলটি পড়া যায়নি"); settleCrop(null); });
   });
 }
+
+window.addEventListener("resize", () => {
+  if (cropModalOverlay.classList.contains("show") && cropConfig) {
+    requestAnimationFrame(() => initCropSelection(cropConfig.ratio));
+  }
+});
 
 function cropPointerDown(e, action) {
   cropAction = action;
@@ -1216,14 +1380,18 @@ cropSelectionEl.addEventListener("pointerup", endCropAction);
 cropSelectionEl.addEventListener("pointercancel", endCropAction);
 
 cropConfirmBtnEl.addEventListener("click", () => {
-  const scale = cropNaturalW / imgDispW;
-  const srcX = (selX - imgOffX) * scale, srcY = (selY - imgOffY) * scale;
-  const srcW = selW * scale, srcH = selH * scale;
+  if (!cropConfig) return;
+  const src = currentCropSourceRect();
   const canvas = document.createElement("canvas");
   canvas.width = cropConfig.width; canvas.height = cropConfig.height;
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(cropImageEl, srcX, srcY, srcW, srcH, 0, 0, cropConfig.width, cropConfig.height);
-  settleCrop(canvas.toDataURL("image/jpeg", 0.9));
+  if (!ctx) { showToast("এই ব্রাউজারে ক্রপ করা যাচ্ছে না"); settleCrop(null); return; }
+  // white backdrop so transparent PNG/WebP areas don't turn black in the JPEG
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(cropImageEl, src.x, src.y, src.w, src.h, 0, 0, cropConfig.width, cropConfig.height);
+  settleCrop(canvas.toDataURL("image/jpeg", IMAGE_UPLOAD_RULES.jpegQuality));
 });
 cropCancelBtnEl.addEventListener("click", () => settleCrop(null));
 cropModalCloseBtnEl.addEventListener("click", () => settleCrop(null));
@@ -1245,7 +1413,7 @@ const DEFAULT_LANDING = {
   feature2Title: "জরুরি সাড়া", feature2Text: "ব্লাড গ্রুপ ও এলাকা অনুযায়ী মুহূর্তেই কাছাকাছি রক্তদাতা খুঁজে বের করা যায়, একদম ফ্রি-তে।",
   feature3Title: "সহজ ও বিনামূল্যে", feature3Text: "কোনো সাইনআপ ফি বা লুকানো খরচ নেই — যে কেউ রক্তদাতা হতে বা খুঁজতে পারেন সম্পূর্ণ বিনামূল্যে।",
   team: [], faqs: [], partners: [], news: [], hospitals: [],
-  processStepsRecipient: [], processStepsDonor: [], testimonials: [],
+  processStepsRecipient: [], processStepsDonor: [],
   contactName1: "নাম ১", contactPhone1: "01XXXXXXXXX",
   contactPhoto1: "", contactWhatsapp1: "", contactMessenger1: "",
   contactPhoto2: "", contactWhatsapp2: "", contactMessenger2: "",
@@ -1275,7 +1443,6 @@ function normalizeLandingData() {
   landingData.hospitals = toArrayField(landingData.hospitals);
   landingData.processStepsRecipient = toArrayField(landingData.processStepsRecipient);
   landingData.processStepsDonor = toArrayField(landingData.processStepsDonor);
-  landingData.testimonials = toArrayField(landingData.testimonials);
 }
 function syncListToFirebase(fieldName, arr) {
   if (!firebaseAvailable || !landingPageRef) return;
@@ -1283,9 +1450,10 @@ function syncListToFirebase(fieldName, arr) {
   landingPageRef.child(fieldName).set(toWrite).catch(err => console.log(fieldName + " sync failed:", err));
 }
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function donationNoNum(no) { const m = String(no || "").match(/(\d+)\s*$/); return m ? parseInt(m[1], 10) : 0; }
 function genDonationNo() {
   let maxNo = 0;
-  landingData.donationRecords.forEach(r => { const n = parseInt(r.donationNo, 10); if (!isNaN(n) && n > maxNo) maxNo = n; });
+  landingData.donationRecords.forEach(r => { const n = donationNoNum(r.donationNo); if (n > maxNo) maxNo = n; });
   return String(maxNo + 1).padStart(4, "0");
 }
 function escAttr(str) {
@@ -1324,11 +1492,10 @@ const PANEL_TITLES = {
   about: ["আমরা কারা", "প্ল্যাটফর্মের পরিচিতি ও ফিচার"],
   impact: ["ইমপ্যাক্ট / CTA", "রক্তদাতা হওয়ার আহ্বান ব্যান্ড"],
   steps: ["ধাপসমূহ", "রক্তদাতা খোঁজা ও রক্তদানের ধাপ"],
-  news: ["ব্লগ / আর্টিকেল", "স্বাস্থ্য টিপস, মিথ ভাঙা ও ঘোষণা লেখা / প্রকাশ ব্যবস্থাপনা"],
+  news: ["সংবাদ", "গত মাসের কার্যক্রম, ডোনেশন হিস্ট্রি রিপোর্ট ছবি, ঘোষণা ও স্বাস্থ্য টিপস ব্যবস্থাপনা"],
   hospitals: ["হাসপাতাল ও ব্লাড ব্যাংক", "নিকটস্থ হাসপাতাল ও ব্লাড ব্যাংকের তালিকা ব্যবস্থাপনা"],
   team: ["টিম সদস্য", "টিম মেম্বার ব্যবস্থাপনা"],
   faq: ["প্রায়শই জিজ্ঞাসিত প্রশ্ন", "FAQ ব্যবস্থাপনা"],
-  testimonials: ["সফলতার গল্প", "টেস্টিমোনিয়াল ব্যবস্থাপনা"],
   partners: ["সহযোগী প্রতিষ্ঠান", "পার্টনার লোগো ব্যবস্থাপনা"],
   donations: ["ডোনেশন রেকর্ড", "সার্চযোগ্য ডোনেশন রেকর্ড ব্যবস্থাপনা"],
   gallery: ["গ্যালারি", "হোমপেজ গ্যালারি ছবি ব্যবস্থাপনা"],
@@ -1382,14 +1549,14 @@ function renderNewsList() {
   const el = document.getElementById("listNews");
   const sorted = landingData.news.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
   if (!sorted.length) {
-    el.innerHTML = emptyStateHtml("fa-book-open", "এখনও কোনো ব্লগ পোস্ট যোগ করা হয়নি");
+    el.innerHTML = emptyStateHtml("fa-newspaper", "এখনও কোনো সংবাদ যোগ করা হয়নি");
   } else {
     el.innerHTML = sorted.map(n =>
       '<div class="partnerCard"><div class="logoWrap" style="height:90px; border-radius:10px;">' +
         (n.newsImage ? '<img src="' + escAttr(n.newsImage) + '" alt="" style="max-height:90px;">' : '<i class="fa-solid fa-newspaper" aria-hidden="true"></i>') +
       '</div>' +
       '<div class="name" style="margin-bottom:2px;">' + escHtml(n.title || "শিরোনামহীন") + '</div>' +
-      '<div style="font-size:11px; color:var(--muted); margin-bottom:10px;">' + escHtml(n.category || "সাধারণ") + ' · ' + newsDateLabel(n.date) + '</div>' +
+      '<div style="font-size:11px; color:var(--muted); margin-bottom:10px;">' + escHtml(n.category || "সাধারণ") + ' · ' + newsDateLabel(n.date) + ((n.reportImages && Object.keys(n.reportImages).length) ? ' · <span style="color:var(--crimson);font-weight:700;"><i class="fa-solid fa-images" aria-hidden="true"></i> রিপোর্ট</span>' : '') + '</div>' +
       '<div class="acts"><button class="iconBtn" data-edit-item="news" data-id="' + n.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div></div>'
     ).join("");
   }
@@ -1442,23 +1609,6 @@ function renderFaqList() {
   }
   document.getElementById("navBadgeFaq").textContent = landingData.faqs.length;
   document.getElementById("qlFaq").textContent = landingData.faqs.length + "টি";
-}
-
-function renderTestimonialsList() {
-  const el = document.getElementById("listTestimonials");
-  if (!landingData.testimonials.length) {
-    el.innerHTML = emptyStateHtml("fa-quote-left", "এখনও কোনো গল্প যোগ করা হয়নি");
-  } else {
-    el.innerHTML = '<table class="dataTable"><thead><tr><th>নাম</th><th>গ্রুপ</th><th>গল্প</th><th></th></tr></thead><tbody>' +
-      landingData.testimonials.map(t =>
-        '<tr><td><b>' + escHtml(t.name) + '</b><div style="font-size:11.5px;color:var(--muted);">' + escHtml(t.meta) + '</div></td>' +
-        '<td><span class="badge">' + escHtml(t.bloodGroup) + '</span></td>' +
-        '<td style="max-width:320px; color:var(--muted);">' + escHtml((t.text || "").slice(0, 80)) + ((t.text || "").length > 80 ? "…" : "") + '</td>' +
-        '<td class="rowActions"><button class="iconBtn" data-edit-item="testimonial" data-id="' + t.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></td></tr>'
-      ).join("") + '</tbody></table>';
-  }
-  document.getElementById("navBadgeTestimonials").textContent = landingData.testimonials.length;
-  document.getElementById("qlTestimonials").textContent = landingData.testimonials.length + "টি";
 }
 
 function renderPartnersList() {
@@ -1519,9 +1669,7 @@ function renderDonationsList() {
   }
   // largest donation number first
   records = records.slice().sort((a, b) => {
-    const na = parseInt(a.donationNo, 10), nb = parseInt(b.donationNo, 10);
-    const va = isNaN(na) ? -Infinity : na, vb = isNaN(nb) ? -Infinity : nb;
-    return vb - va;
+    return donationNoNum(b.donationNo) - donationNoNum(a.donationNo);
   });
   if (!records.length) {
     el.innerHTML = emptyStateHtml("fa-hand-holding-droplet", donationSearchTerm ? "কোনো রেকর্ড খুঁজে পাওয়া যায়নি" : "এখনও কোনো রেকর্ড যোগ করা হয়নি");
@@ -1553,7 +1701,7 @@ function emptyStateHtml(icon, msg) {
 
 function renderDashboardStats() {
   document.getElementById("statTotalDonors").textContent = donorsCount || 0;
-  document.getElementById("statTotalDonations").textContent = landingData.donationRecords.length;
+  document.getElementById("statTotalDonations").textContent = landingData.donationRecords.reduce((sum, r) => sum + (parseInt(r.visitCount, 10) || 1), 0);
   document.getElementById("statVisitors").textContent = visitorCount || 0;
   document.getElementById("statTeamCount").textContent = landingData.team.length;
 }
@@ -1566,7 +1714,6 @@ function renderAll() {
   renderHospitalsList();
   renderTeamList();
   renderFaqList();
-  renderTestimonialsList();
   renderPartnersList();
   renderGalleryList();
   renderStepsLists();
@@ -1602,10 +1749,13 @@ document.querySelectorAll("[data-save-scalar]").forEach(btn => {
    HERO / ABOUT / IMPACT IMAGE UPLOAD
    ============================================================ */
 let pendingScalarImgKey = null;
+let pendingCropKey = null;      // key into IMAGE_CROP_CONFIG for the file being picked
+let uploadsInFlight = 0;        // blocks "Save" while an image is still uploading
 const hiddenFileInput = document.getElementById("hiddenFileInput");
 document.querySelectorAll("[data-imgpick]").forEach(btn => {
   btn.addEventListener("click", () => {
     pendingScalarImgKey = btn.getAttribute("data-imgpick");
+    pendingCropKey = pendingScalarImgKey;
     pendingModalImgKey = null;
     hiddenFileInput.click();
   });
@@ -1621,20 +1771,21 @@ document.querySelectorAll("[data-imgclear]").forEach(btn => {
 });
 
 /* ============================================================
-   GENERIC ITEM MODAL — add/edit for team, faq, partner, testimonial,
-   process steps, donation records, and gallery photos
+   GENERIC ITEM MODAL — add/edit/delete for news, hospitals, team, faq,
+   partner, process steps, donation records, and gallery photos
    ============================================================ */
 const SCHEMAS = {
   news: {
-    title: "ব্লগ পোস্ট", listKey: "news",
+    title: "সংবাদ", listKey: "news",
     fields: [
-      { key: "newsImage", label: "ছবি (ঐচ্ছিক)", type: "image" },
-      { key: "category", label: "ক্যাটাগরি", type: "select", options: ["স্বাস্থ্য টিপস", "মিথ ভাঙা", "ঘোষণা", "সাধারণ"] },
-      { key: "title", label: "শিরোনাম", type: "text" },
-      { key: "content", label: "বিস্তারিত", type: "textarea" },
-      { key: "date", label: "তারিখ", type: "date" }
+      { key: "newsImage", label: "থাম্বনেইল ছবি (ঐচ্ছিক) — ১:১ ক্রপ হবে", type: "image" },
+      { key: "category", label: "ক্যাটাগরি", type: "select", options: ["মাসিক কার্যক্রম", "ঘোষণা", "স্বাস্থ্য টিপস", "মিথ ভাঙা", "সাধারণ"] },
+      { key: "title", label: "শিরোনাম *", type: "text" },
+      { key: "content", label: "বিবরণ *", type: "textarea", rows: 6 },
+      { key: "date", label: "তারিখ *", type: "date" },
+      { key: "reportImages", label: "রিপোর্টের ছবি (ঐচ্ছিক) — গত মাসের ডোনেশন হিস্ট্রি", type: "images" }
     ],
-    blank: () => ({ id: genId(), title: "", content: "", newsImage: "", category: "স্বাস্থ্য টিপস", date: new Date().toISOString().slice(0, 10) })
+    blank: () => ({ id: genId(), title: "", content: "", newsImage: "", category: "মাসিক কার্যক্রম", date: new Date().toISOString().slice(0, 10), reportImages: [] })
   },
   hospital: {
     title: "হাসপাতাল / ব্লাড ব্যাংক", listKey: "hospitals",
@@ -1671,16 +1822,6 @@ const SCHEMAS = {
       { key: "name", label: "প্রতিষ্ঠানের নাম", type: "text" }
     ],
     blank: () => ({ id: genId(), name: "", logo: "" })
-  },
-  testimonial: {
-    title: "সফলতার গল্প", listKey: "testimonials",
-    fields: [
-      { key: "name", label: "নাম", type: "text" },
-      { key: "bloodGroup", label: "রক্তের গ্রুপ", type: "select", options: ["A+","A-","B+","B-","AB+","AB-","O+","O-"] },
-      { key: "meta", label: "এলাকা / পরিচয়", type: "text" },
-      { key: "text", label: "গল্প", type: "textarea" }
-    ],
-    blank: () => ({ id: genId(), name: "", bloodGroup: "O+", meta: "", text: "" })
   },
   stepRecipient: {
     title: "ধাপ", listKey: "processStepsRecipient",
@@ -1731,7 +1872,7 @@ const itemModalDeleteBtn = document.getElementById("itemModalDeleteBtn");
 function fieldRowHtml(f, value) {
   const id = "mf_" + f.key;
   if (f.type === "textarea") {
-    return '<div class="field span2"><label>' + f.label + '</label><textarea class="textArea" id="' + id + '" rows="3">' + escHtml(value || "") + '</textarea></div>';
+    return '<div class="field span2"><label>' + f.label + '</label><textarea class="textArea" id="' + id + '" rows="' + (f.rows || 3) + '">' + escHtml(value || "") + '</textarea></div>';
   }
   if (f.type === "select") {
     return '<div class="field"><label>' + f.label + '</label><select class="selectInput" id="' + id + '">' +
@@ -1746,6 +1887,10 @@ function fieldRowHtml(f, value) {
   }
   if (f.type === "date") {
     return '<div class="field"><label>' + f.label + '</label><input type="date" class="textInput" id="' + id + '" value="' + escAttr(value || "") + '"></div>';
+  }
+  if (f.type === "images") {
+    return '<div class="field span2"><label>' + f.label + '</label><div class="reportImgs" id="modalImgs_' + f.key + '"></div>' +
+      '<div class="hint">সর্বোচ্চ ' + MAX_REPORT_IMAGES + 'টি ছবি · JPG/PNG/WebP · সর্বোচ্চ ' + formatBytes(IMAGE_UPLOAD_RULES.maxBytes) + ' · পুরো ছবি থাকবে (ক্রপ হবে না)</div></div>';
   }
   if (f.type === "image") {
     return '<div class="field span2"><label>' + f.label + '</label><div class="imgUpload">' +
@@ -1777,6 +1922,7 @@ function openItemModal(type, item) {
   itemModalBody.querySelectorAll("[data-modal-imgpick]").forEach(btn => {
     btn.addEventListener("click", () => {
       pendingModalImgKey = btn.getAttribute("data-modal-imgpick");
+      pendingCropKey = currentModalType + "." + pendingModalImgKey;
       pendingScalarImgKey = null;
       hiddenFileInput.click();
     });
@@ -1790,6 +1936,7 @@ function openItemModal(type, item) {
     });
   });
 
+  schema.fields.filter(f => f.type === "images").forEach(f => renderImagesField(f.key));
   itemModalOverlay.classList.add("show");
   if (type === "donationRecord" && !item) {
     const nameInput = document.getElementById("mf_name");
@@ -1830,7 +1977,6 @@ function renderListByKey(listKey) {
   else if (listKey === "team") renderTeamList();
   else if (listKey === "faqs") renderFaqList();
   else if (listKey === "partners") renderPartnersList();
-  else if (listKey === "testimonials") renderTestimonialsList();
   else if (listKey === "donationPhotos") renderGalleryList();
   else if (listKey === "donationRecords") renderDonationsList();
   else if (listKey === "processStepsRecipient" || listKey === "processStepsDonor") renderStepsLists();
@@ -1840,14 +1986,21 @@ function renderListByKey(listKey) {
 document.getElementById("itemModalSaveBtn").addEventListener("click", () => {
   const schema = SCHEMAS[currentModalType];
   if (!schema) return;
+  if (uploadsInFlight > 0) { showToast("আপলোড শেষ হওয়া পর্যন্ত একটু অপেক্ষা করুন"); return; }
   schema.fields.forEach(f => {
-    if (f.type === "image") return; // already tracked live on currentModalItem
+    if (f.type === "image" || f.type === "images") return; // already tracked live on currentModalItem
     const el = document.getElementById("mf_" + f.key);
     if (!el) return;
     if (f.type === "checkbox") currentModalItem[f.key] = el.checked;
     else if (f.type === "number") currentModalItem[f.key] = parseInt(el.value, 10) || 1;
     else currentModalItem[f.key] = el.value.trim();
   });
+  if (currentModalType === "news") {
+    if (!currentModalItem.title) { showToast("সংবাদের শিরোনাম লিখুন"); return; }
+    if (!currentModalItem.content) { showToast("সংবাদের বিবরণ লিখুন"); return; }
+    if (!currentModalItem.date || isNaN(new Date(currentModalItem.date).getTime())) { showToast("সঠিক তারিখ দিন"); return; }
+    currentModalItem.reportImages = (currentModalItem.reportImages || []).filter(Boolean);
+  }
   if (currentModalType === "donationRecord") {
     if (!currentModalItem.name) { showToast("নাম লিখুন"); return; }
     if (currentModalItem.hidePhoto) currentModalItem.imageBackup = currentModalItem.image;
@@ -1858,6 +2011,14 @@ document.getElementById("itemModalSaveBtn").addEventListener("click", () => {
 
   const list = landingData[schema.listKey];
   const idx = list.findIndex(x => x.id === currentModalItem.id);
+  if (currentModalType === "donationRecord" && idx < 0) {
+    // One card per donor: a new manual card must not duplicate an existing one.
+    const nm = (currentModalItem.name || "").trim().toLowerCase();
+    const dup = list.find(r => (r.donationNo && r.donationNo === currentModalItem.donationNo) ||
+      (nm && nm !== "ভাই" && nm !== "বোন" && (r.name || "").trim().toLowerCase() === nm && r.bloodGroup === currentModalItem.bloodGroup));
+    if (dup) { showToast("এই ডোনারের কার্ড আগে থেকেই আছে (" + dup.donationNo + ") — সেটি এডিট করুন"); return; }
+    if (!window.confirm("ডোনার কার্ড সাধারণত list.html-এ রক্তদান যোগ করলেই নিজে থেকে তৈরি/আপডেট হয়। তবুও ম্যানুয়াল কার্ড বানাবেন?")) return;
+  }
   if (idx >= 0) list[idx] = currentModalItem;
   else list.unshift(currentModalItem);
 
@@ -1880,20 +2041,31 @@ document.getElementById("itemModalDeleteBtn").addEventListener("click", () => {
 
 /* Shared hidden file input — routes to whichever upload target (a
    scalar image field, or a field inside the open item modal) was
-   clicked most recently. Every pick is cropped to that field's
-   configured ratio before it is uploaded. */
+   clicked most recently. Every pick is validated, then cropped to that
+   field's configured ratio (IMAGE_CROP_CONFIG) before it is uploaded. */
+function setUploadingState(el, on) { if (el) el.classList.toggle("isUploading", !!on); }
+
 hiddenFileInput.addEventListener("change", async function () {
   const file = this.files && this.files[0];
   this.value = "";
   if (!file) return;
   const scalarKey = pendingScalarImgKey;
   const modalKey = pendingModalImgKey;
+  const cropKey = pendingCropKey;
   pendingScalarImgKey = null;
   pendingModalImgKey = null;
+  pendingCropKey = null;
   if (!scalarKey && !modalKey) return;
-  const cfg = IMAGE_CROP_CONFIG[scalarKey || modalKey] || IMAGE_CROP_CONFIG._default;
-  const cropped = await cropImageFile(file, cfg);
-  if (!cropped) return; // user cancelled the crop
+  const itemRef = currentModalItem;   // the item this upload belongs to
+  const schemaRef = SCHEMAS[currentModalType];
+  const fieldDef = modalKey && schemaRef ? schemaRef.fields.find(f => f.key === modalKey) : null;
+  const isMulti = !!(fieldDef && fieldDef.type === "images");
+  if (isMulti && (itemRef[modalKey] || []).length >= MAX_REPORT_IMAGES) { showToast("সর্বোচ্চ " + MAX_REPORT_IMAGES + "টি ছবি দেওয়া যাবে"); return; }
+  const cropped = await cropImageFile(file, cropKey);
+  if (!cropped) return; // invalid file, unreadable, or the user cancelled the crop
+  const uiId = () => isMulti ? "imgAdd_" + modalKey : (scalarKey ? "prev_" + scalarKey : "modalPrev_" + modalKey);
+  setUploadingState(document.getElementById(uiId()), true);
+  uploadsInFlight++;
   showToast("ছবি আপলোড হচ্ছে…");
   try {
     const url = await uploadImageToDrive(cropped, "img-" + Date.now() + ".jpg");
@@ -1901,15 +2073,55 @@ hiddenFileInput.addEventListener("change", async function () {
       landingData[scalarKey] = url;
       renderImagePreview(scalarKey);
       if (firebaseAvailable && landingPageRef) landingPageRef.child(scalarKey).set(url).catch(() => {});
-    } else if (modalKey && currentModalItem) {
-      currentModalItem[modalKey] = url;
-      const prev = document.getElementById("modalPrev_" + modalKey);
+    } else if (isMulti && itemRef) {
+      itemRef[modalKey] = (itemRef[modalKey] || []).concat(url);
+      if (currentModalItem === itemRef) renderImagesField(modalKey);
+    } else if (modalKey && itemRef) {
+      itemRef[modalKey] = url;
+      // only touch the preview if the same item's modal is still open
+      const prev = currentModalItem === itemRef ? document.getElementById("modalPrev_" + modalKey) : null;
       if (prev) prev.innerHTML = '<img src="' + escAttr(url) + '" alt="">';
     }
     showToast("ছবি যোগ হয়েছে");
   } catch (err) {
     console.log("Image upload failed:", err);
-    showToast("ছবি আপলোড করা যায়নি");
+    showToast("ছবি আপলোড ব্যর্থ: " + String((err && err.message) || err).replace(/^Error:\s*/, "").slice(0, 160));
+  } finally {
+    uploadsInFlight = Math.max(0, uploadsInFlight - 1);
+    setUploadingState(document.getElementById(uiId()), false);
+  }
+});
+
+/* ============================================================
+   রিপোর্টের ছবি (সংবাদ) — একাধিক ছবি; প্রতিটি আলাদাভাবে আপলোড হয়,
+   Firebase-এ শুধু লিংকের তালিকা (reportImages) সেভ হয়।
+   ============================================================ */
+function renderImagesField(key) {
+  const box = document.getElementById("modalImgs_" + key);
+  if (!box || !currentModalItem) return;
+  const list = (currentModalItem[key] || []).filter(Boolean);
+  currentModalItem[key] = list;
+  box.innerHTML = list.map((u, i) =>
+    '<div class="reportImgItem"><img src="' + escAttr(u) + '" alt="">' +
+    '<button type="button" class="reportImgDel" data-imgs-del="' + key + '" data-i="' + i + '" aria-label="মুছুন"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>'
+  ).join("") + (list.length < MAX_REPORT_IMAGES
+    ? '<button type="button" class="reportImgAdd" id="imgAdd_' + key + '" data-imgs-add="' + key + '"><i class="fa-solid fa-plus" aria-hidden="true"></i>ছবি যোগ</button>' : "");
+}
+itemModalBody.addEventListener("click", e => {
+  const add = e.target.closest("[data-imgs-add]");
+  if (add) {
+    pendingModalImgKey = add.getAttribute("data-imgs-add");
+    pendingCropKey = currentModalType + "." + pendingModalImgKey;
+    pendingScalarImgKey = null;
+    hiddenFileInput.click();
+    return;
+  }
+  const del = e.target.closest("[data-imgs-del]");
+  if (del && currentModalItem) {
+    const key = del.getAttribute("data-imgs-del");
+    const i = parseInt(del.getAttribute("data-i"), 10);
+    currentModalItem[key] = (currentModalItem[key] || []).filter((_, idx) => idx !== i);
+    renderImagesField(key);
   }
 });
 
@@ -1935,8 +2147,8 @@ galleryBulkFileInput.addEventListener("change", async function () {
   updateProgress();
 
   for (const file of files) {
-    const cropped = await cropImageFile(file, IMAGE_CROP_CONFIG.src);
-    if (!cropped) { skipped++; updateProgress(); continue; } // user cancelled this one's crop
+    const cropped = await cropImageFile(file, "galleryPhoto.src");
+    if (!cropped) { skipped++; updateProgress(); continue; } // invalid file, or the user cancelled this one's crop
     try {
       const url = await uploadImageToDrive(cropped, "gallery-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6) + ".jpg");
       landingData.donationPhotos.unshift({ id: genId(), src: url });
