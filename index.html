@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Admin Panel — Blood Network Baraikhali</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="apple-touch-icon" href="fav.jpeg">
-<link rel="icon" type="image/x-icon" href="fav.jpeg">
+<link rel="apple-touch-icon" href="admin-icon-192.png">
+<link rel="icon" type="image/png" href="admin-icon-192.png">
 <meta name="theme-color" content="#9E1B32">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -415,6 +415,43 @@
   .partnerCard .name { font-size: 12.5px; font-weight: 700; margin-bottom: 10px; }
   .partnerCard .acts { display: flex; gap: 6px; justify-content: center; }
 
+  /* ---- page / section order panel ---- */
+  .cardNote { font-size: 12.5px; color: var(--muted); line-height: 1.6; margin: -4px 0 14px; }
+  .orderList { display: flex; flex-direction: column; gap: 8px; }
+  .orderItem {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: var(--radius-md); transition: opacity .2s, background .2s;
+  }
+  .orderItem.off { opacity: .55; background: var(--cream); }
+  .orderItem.fixed { background: var(--cream); border-style: dashed; }
+  .orderNum {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--crimson-tint); color: var(--crimson);
+    font-size: 11.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .orderIcon { width: 28px; text-align: center; color: var(--crimson); font-size: 14px; flex-shrink: 0; }
+  .orderLabel { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 700; }
+  .orderLock { font-size: 11.5px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+  .orderLock i { margin-right: 4px; }
+  .orderMoves { display: flex; gap: 6px; flex-shrink: 0; }
+  .orderSwitch { position: relative; width: 38px; height: 22px; flex-shrink: 0; cursor: pointer; }
+  .orderSwitch input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .orderSwitch span { position: absolute; inset: 0; background: #D5CBC3; border-radius: 999px; transition: background .2s; }
+  .orderSwitch span::after {
+    content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s;
+  }
+  .orderSwitch input:checked + span { background: var(--sage); }
+  .orderSwitch input:checked + span::after { transform: translateX(16px); }
+  .iconBtn:disabled { opacity: .3; cursor: not-allowed; pointer-events: none; }
+  .tierTag {
+    display: inline-block; font-size: 10.5px; font-weight: 800; padding: 2px 9px; border-radius: 999px; margin-bottom: 8px;
+    background: var(--cream); border: 1px solid var(--line); color: var(--muted);
+  }
+  .tierTag.t-main { background: #F7EAD8; border-color: #E3C79B; color: #7A4A18; }
+  .tierTag.t-gold { background: #FBF1DE; border-color: #EBD3A5; color: #8F5A20; }
+  .tierTag.t-silver { background: #F1F2F4; border-color: #D9DCE1; color: #4A5260; }
+  .tierTag.t-support { background: var(--sage-tint); border-color: #C3DCCD; color: var(--sage); }
+
   /* ---- modal ---- */
   .modalOverlay {
     position: fixed; inset: 0; background: rgba(27,21,18,0.55); z-index: 500; display: none;
@@ -562,18 +599,133 @@
     .statGrid { grid-template-columns: 1fr 1fr; }
     .topbarSub { display: none; }
   }
+
+  /* ===== PREMIUM UI LAYER (overrides) ===== */
+  :root{--shadow:0 1px 2px rgba(27,21,18,.04),0 8px 28px rgba(27,21,18,.06);--shadow-lg:0 24px 60px rgba(27,21,18,.22);--gold:#C9A25B;}
+  body{background:linear-gradient(180deg,#FBF7F2 0,#F6F0E9 100%);}
+  .sidebar{background:linear-gradient(180deg,#261A16 0,#171010 100%);box-shadow:4px 0 30px rgba(0,0,0,.12);}
+  .sidebarBrand .mark{box-shadow:0 8px 20px rgba(158,27,50,.45),inset 0 1px 0 rgba(255,255,255,.25);}
+  .navItem{position:relative;transition:background .2s,color .2s,transform .2s;}
+  .navItem:hover{transform:translateX(2px);}
+  .navItem.active{background:linear-gradient(135deg,#B3203A,#8A1228);box-shadow:0 8px 18px rgba(158,27,50,.38);}
+  .navItem.active::before{content:"";position:absolute;left:-12px;top:20%;bottom:20%;width:4px;border-radius:0 4px 4px 0;background:var(--gold);}
+  .topbar{background:rgba(255,255,255,.82);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid rgba(234,224,216,.8);}
+  .adminAvatar{background:linear-gradient(145deg,#B3203A,#6E1220);color:#fff;box-shadow:0 4px 12px rgba(158,27,50,.35);}
+  .content{max-width:1280px;}
+  .card,.statCard,.dataTable{border-radius:18px;border:1px solid rgba(234,224,216,.9);box-shadow:var(--shadow);}
+  .card h3{font-size:15px;}
+  .btn{transition:transform .15s,box-shadow .2s,background .2s;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn.primary{background:linear-gradient(135deg,#B3203A,#8A1228);box-shadow:0 8px 18px rgba(158,27,50,.3);}
+  .textInput:focus,.textArea:focus,.selectInput:focus,.loginInput:focus{box-shadow:0 0 0 4px rgba(158,27,50,.1);}
+  .modalBox{border-radius:22px;box-shadow:var(--shadow-lg);}
+  .modalOverlay{backdrop-filter:blur(4px);}
+  .panelHead h2{font-size:23px;}
+
+  /* hero welcome */
+  .dashHero{position:relative;overflow:hidden;border-radius:22px;padding:26px 28px;margin-bottom:22px;color:#fff;
+    background:radial-gradient(600px 240px at 90% -20%,rgba(201,162,91,.35),transparent 60%),linear-gradient(120deg,#8A1228 0,#B3203A 55%,#6E1220 100%);
+    box-shadow:0 18px 44px rgba(158,27,50,.28);display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
+  .dashHero::after{content:"\f043";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;right:-10px;bottom:-34px;font-size:170px;color:rgba(255,255,255,.07);}
+  .dashHero h2{margin:0 0 6px;font-size:23px;font-weight:800;letter-spacing:-.01em;}
+  .dashHero p{margin:0;font-size:13px;color:rgba(255,255,255,.8);max-width:520px;line-height:1.6;}
+  .dashHero .heroBtns{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1;}
+  .heroBtn{border:1.5px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:10px 18px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;backdrop-filter:blur(6px);transition:background .2s,transform .15s;}
+  .heroBtn:hover{background:rgba(255,255,255,.22);transform:translateY(-1px);}
+  .heroBtn.solid{background:#fff;color:var(--crimson);border-color:#fff;}
+  .heroBtn.solid:hover{background:#FBF7F2;}
+
+  /* premium stat cards */
+  .statCard{position:relative;overflow:hidden;padding:20px 22px;transition:transform .2s var(--ease),box-shadow .2s;}
+  .statCard:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(27,21,18,.1);}
+  .statCard::after{content:"";position:absolute;right:-24px;top:-24px;width:96px;height:96px;border-radius:50%;background:radial-gradient(circle,rgba(158,27,50,.08),transparent 70%);}
+  .statCard .icon{width:44px;height:44px;border-radius:13px;font-size:17px;}
+  .statCard .num{font-size:30px;font-variant-numeric:tabular-nums;}
+
+  /* charts */
+  .chartGrid{display:grid;grid-template-columns:1.7fr 1fr;gap:18px;margin-bottom:18px;}
+  .chartGrid.three{grid-template-columns:1fr 1fr;}
+  .chartCard{margin-bottom:0;}
+  .chartHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;}
+  .chartHead h3{margin:0;}
+  .chartHead small{display:block;font-size:11.5px;color:var(--muted);font-weight:500;margin-top:3px;}
+  .chartTag{font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--sage-tint);color:var(--sage);white-space:nowrap;font-family:var(--font-mono);}
+  .chartBox{width:100%;}
+  .chartBox svg{width:100%;height:auto;display:block;overflow:visible;}
+  .gridLine{stroke:var(--line);stroke-dasharray:3 4;}
+  .axisTxt{fill:var(--muted);font-size:10.5px;font-family:var(--font-mono);}
+  .areaLine{fill:none;stroke:url(#gLine);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+  .areaDot{fill:#fff;stroke:var(--crimson);stroke-width:2.5;transition:r .15s;}
+  .areaDot:hover{r:7;}
+  .barRect{transition:opacity .2s;}
+  .barRect:hover{opacity:.82;}
+  .donutWrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:center;}
+  .donutWrap svg{width:170px;height:170px;flex-shrink:0;}
+  .donutCenter{font-size:26px;font-weight:800;fill:var(--ink);}
+  .donutSub{font-size:10.5px;fill:var(--muted);font-weight:600;}
+  .legend{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:12.5px;font-weight:600;}
+  .legend div{display:flex;align-items:center;gap:8px;}
+  .legend i{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+  .legend b{margin-left:auto;font-family:var(--font-mono);font-size:12px;}
+  .hBar{display:flex;flex-direction:column;gap:13px;}
+  .hBarRow .top{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;margin-bottom:5px;gap:10px;}
+  .hBarRow .top span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .hBarRow .top span:last-child{font-family:var(--font-mono);color:var(--crimson);}
+  .hBarTrack{height:9px;background:var(--cream);border-radius:99px;overflow:hidden;}
+  .hBarFill{height:100%;border-radius:99px;background:linear-gradient(90deg,#B3203A,#E0556B);transition:width .8s var(--ease);}
+  .recentList{display:flex;flex-direction:column;}
+  .recentItem{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft);}
+  .recentItem:last-child{border-bottom:none;}
+  .recentItem .rowThumb{width:40px;height:40px;border-radius:12px;}
+  .recentItem .meta{flex:1;min-width:0;line-height:1.35;}
+  .recentItem .meta b{display:block;font-size:13.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .recentItem .meta span{font-size:11.5px;color:var(--muted);}
+  .chartEmpty{padding:34px 10px;text-align:center;color:var(--muted);font-size:13px;}
+
+  /* donation panel premium */
+  .donSummary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+  .donSum{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;}
+  .donSum .ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+  .donSum b{display:block;font-size:20px;font-weight:800;line-height:1.1;}
+  .donSum span{font-size:11.5px;color:var(--muted);font-weight:600;}
+  .chipRow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .chip{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink-soft);transition:all .15s;}
+  .chip:hover{border-color:var(--crimson);color:var(--crimson);}
+  .chip.on{background:var(--crimson);border-color:var(--crimson);color:#fff;box-shadow:0 6px 14px rgba(158,27,50,.28);}
+  .donationRow{border-radius:14px;padding:12px 16px;}
+  .donationRow:hover{border-color:rgba(158,27,50,.25);}
+  .bloodGroupPill{background:linear-gradient(135deg,#FBE9EC,#F7E3E6);color:var(--crimson);border:1px solid rgba(158,27,50,.15);}
+  .searchBox input{padding:11px 14px 11px 36px;box-shadow:var(--shadow);}
+  @media(max-width:1000px){.chartGrid,.chartGrid.three{grid-template-columns:1fr;}.donSummary{grid-template-columns:1fr 1fr;}}
+  @media(max-width:700px){.dashHero{padding:20px;}.legend{grid-template-columns:1fr 1fr;}.donSummary{grid-template-columns:1fr 1fr;gap:10px;}}
+  /* live + views */
+  .liveDot{width:10px;height:10px;border-radius:50%;background:#22A06B;flex-shrink:0;position:relative;display:inline-block;}
+  .liveDot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #22A06B;opacity:.6;animation:livePing 1.6s ease-out infinite;}
+  @keyframes livePing{0%{transform:scale(.6);opacity:.8;}100%{transform:scale(1.7);opacity:0;}}
+  .livePill{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--sage);background:var(--sage-tint);border:1px solid #C3DCCD;padding:7px 13px;border-radius:999px;white-space:nowrap;}
+  .livePill b{font-family:var(--font-mono);font-size:13px;color:var(--ink);}
+  .viewsStats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+  .vStat{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:11px;min-width:0;}
+  .vStat b{display:block;font-size:22px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;}
+  .vStat span.l{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px;}
+  .vStat.live{background:var(--sage-tint);border-color:#C3DCCD;}
+  .viewsRange{display:flex;gap:8px;flex-wrap:wrap;}
+  @media(max-width:700px){.viewsStats{grid-template-columns:1fr 1fr;}.livePill span.t{display:none;}}
+  .sidebarBrand .mark, .loginMark { background:#fff !important; padding:0; overflow:hidden; }
+  .sidebarBrand .mark img, .loginMark img { width:100%; height:100%; object-fit:contain; display:block; }
+  .loginMark { width:84px; height:84px; }
 </style>
 </head>
 <body>
 
 <div class="loaderScreen" id="loaderScreen">
-  <div class="mark"><i class="fa-solid fa-droplet" aria-hidden="true"></i></div>
+  <div class="mark"><img src="admin-logo.png" alt="Admin"></div>
   <span>ADMIN PANEL LOADING…</span>
 </div>
 
 <div id="loginScreen" style="display:none;">
   <div class="loginCard">
-    <div class="loginMark"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
+    <div class="loginMark"><img src="admin-logo.png" alt="Admin"></div>
     <h1>অ্যাডমিন প্যানেল</h1>
     <p>Blood Network Baraikhali ওয়েবসাইট পরিচালনার জন্য আপনার অ্যাডমিন ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন।</p>
     <div class="fieldGroup">
@@ -586,14 +738,14 @@
     </div>
     <div class="loginError" id="loginError">ইমেইল বা পাসওয়ার্ড ভুল, আবার চেষ্টা করুন।</div>
     <button type="button" class="btnLogin" id="loginBtn">লগইন করুন</button>
-    <div class="loginFoot">BLOOD DONOR NETWORK · ADMIN v1.0</div>
+    <div class="loginFoot">BLOOD DONOR NETWORK · ADMIN · 11 Nov 2026</div>
   </div>
 </div>
 
 <div id="appShell">
   <aside class="sidebar" id="sidebar">
     <div class="sidebarBrand">
-      <div class="mark"><i class="fa-solid fa-droplet" aria-hidden="true"></i></div>
+      <div class="mark"><img src="admin-logo.png"></div>
       <div class="txt">
         <strong>Blood Network Baraikhali</strong>
         <span>ADMIN PANEL</span>
@@ -609,6 +761,7 @@
       <button type="button" class="navItem" data-panel="about"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> আমরা কারা</button>
       <button type="button" class="navItem" data-panel="impact"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i> ইমপ্যাক্ট / CTA</button>
       <button type="button" class="navItem" data-panel="steps"><i class="fa-solid fa-list-ol" aria-hidden="true"></i> ধাপসমূহ</button>
+      <button type="button" class="navItem" data-panel="layout"><i class="fa-solid fa-sort" aria-hidden="true"></i> পেজ ও সেকশন ক্রম</button>
 
       <div class="sidebarGroupLabel">তথ্য ব্যবস্থাপনা</div>
       <button type="button" class="navItem" data-panel="news"><i class="fa-solid fa-newspaper" aria-hidden="true"></i> সংবাদ <span class="navBadge" id="navBadgeNews">0</span></button>
@@ -616,6 +769,7 @@
       <button type="button" class="navItem" data-panel="team"><i class="fa-solid fa-users" aria-hidden="true"></i> টিম <span class="navBadge" id="navBadgeTeam">0</span></button>
       <button type="button" class="navItem" data-panel="faq"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> FAQ <span class="navBadge" id="navBadgeFaq">0</span></button>
       <button type="button" class="navItem" data-panel="partners"><i class="fa-solid fa-handshake" aria-hidden="true"></i> সহযোগী <span class="navBadge" id="navBadgePartners">0</span></button>
+      <button type="button" class="navItem" data-panel="sponsors"><i class="fa-solid fa-award" aria-hidden="true"></i> স্পনসর <span class="navBadge" id="navBadgeSponsors">0</span></button>
       <button type="button" class="navItem" data-panel="donations"><i class="fa-solid fa-hand-holding-droplet" aria-hidden="true"></i> ডোনেশন রেকর্ড <span class="navBadge" id="navBadgeDonations">0</span></button>
       <button type="button" class="navItem" data-panel="gallery"><i class="fa-solid fa-image" aria-hidden="true"></i> গ্যালারি <span class="navBadge" id="navBadgeGallery">0</span></button>
       <button type="button" class="navItem" data-panel="calling-card"><i class="fa-solid fa-id-card" aria-hidden="true"></i> কলিং কার্ড</button>
@@ -637,6 +791,7 @@
         <div class="topbarSub" id="topbarSub">সাইটের সার্বিক অবস্থা এক নজরে</div>
       </div>
       <div class="topbarRight">
+        <span class="livePill" title="এই মুহূর্তে সাইটে যারা আছে"><span class="liveDot"></span><b id="liveNowTop">0</b> <span class="t">লাইভ</span></span>
         <a class="topbarLink" href="index.html" target="_blank" rel="noopener"><i class="fa-solid fa-globe" aria-hidden="true"></i> Live Site</a>
         <div class="adminAvatar" id="adminAvatar">A</div>
       </div>
@@ -646,10 +801,14 @@
 
       <!-- ============ DASHBOARD ============ -->
       <section class="panel active" data-panel="dashboard">
-        <div class="panelHead">
-          <div>
-            <h2>স্বাগতম 👋</h2>
-            <p>এখান থেকে পুরো ওয়েবসাইটের কনটেন্ট, টিম, FAQ, ডোনেশন রেকর্ড ও অন্যান্য সব কিছু পরিচালনা করা যাবে।</p>
+        <div class="dashHero">
+          <div style="position:relative;z-index:1">
+            <h2>স্বাগতম, অ্যাডমিন 👋</h2>
+            <p>ওয়েবসাইটের কনটেন্ট, ডোনেশন রেকর্ড, টিম ও সব তথ্য এক জায়গা থেকে পরিচালনা করুন।</p>
+          </div>
+          <div class="heroBtns">
+            <button type="button" class="heroBtn solid" id="heroAddDonor"><i class="fa-solid fa-user-plus"></i> নতুন ডোনার যোগ করুন</button>
+            <button type="button" class="heroBtn" id="heroViewDonations"><i class="fa-solid fa-list-ul"></i> ডোনেশন দেখুন</button>
           </div>
         </div>
         <div class="statGrid">
@@ -674,12 +833,47 @@
             <div class="lbl">টিম সদস্য</div>
           </div>
         </div>
+        <div class="card chartCard" style="margin-bottom:18px;">
+          <div class="chartHead">
+            <div><h3><i class="fa-solid fa-eye"></i> ওয়েবসাইট ভিউ</h3><small>প্রতিদিনের মোট ভিউ (বাংলাদেশ সময় অনুযায়ী) — লাইভ আপডেট হয়</small></div>
+            <div class="viewsRange"><button type="button" class="chip" data-views-range="7">৭ দিন</button><button type="button" class="chip on" data-views-range="30">৩০ দিন</button><button type="button" class="chip" data-views-range="365">১ বছর</button><button type="button" class="chip" data-views-range="1825">৫ বছর</button></div>
+          </div>
+          <div class="viewsStats">
+            <div class="vStat live"><span class="liveDot"></span><div><b id="liveNowNum">0</b><span class="l">এখন লাইভ দেখছে</span></div></div>
+            <div class="vStat"><div><b id="viewsTotalNum">—</b><span class="l">মোট ভিউ</span></div></div>
+            <div class="vStat"><div><b id="viewsTodayNum">—</b><span class="l">আজকের ভিউ</span></div></div>
+            <div class="vStat"><div><b id="viewsRangeNum">—</b><span class="l" id="viewsRangeLbl">শেষ ৩০ দিনে</span></div></div>
+          </div>
+          <div class="chartBox" id="chViews"></div>
+        </div>
+        <div class="chartGrid">
+          <div class="card chartCard">
+            <div class="chartHead"><div><h3><i class="fa-solid fa-chart-line"></i> মাসিক রক্তদান ট্রেন্ড</h3><small>শেষ ১২ মাসের রক্তদান রেকর্ড</small></div><span class="chartTag" id="chTrendTag">—</span></div>
+            <div class="chartBox" id="chTrend"></div>
+          </div>
+          <div class="card chartCard">
+            <div class="chartHead"><div><h3><i class="fa-solid fa-droplet"></i> রক্তের গ্রুপ বিন্যাস</h3><small>রেকর্ড অনুযায়ী বণ্টন</small></div></div>
+            <div class="donutWrap" id="chGroups"></div>
+          </div>
+        </div>
+        <div class="chartGrid three">
+          <div class="card chartCard">
+            <div class="chartHead"><div><h3><i class="fa-solid fa-hospital"></i> শীর্ষ হাসপাতাল / স্থান</h3><small>সবচেয়ে বেশি রক্তদান হয়েছে যেখানে</small></div></div>
+            <div class="hBar" id="chHospitals"></div>
+          </div>
+          <div class="card chartCard">
+            <div class="chartHead"><div><h3><i class="fa-solid fa-clock-rotate-left"></i> সাম্প্রতিক রক্তদান</h3><small>সর্বশেষ ৬টি রেকর্ড</small></div><button type="button" class="btn small" id="recentViewAll">সব দেখুন</button></div>
+            <div class="recentList" id="chRecent"></div>
+          </div>
+        </div>
         <div class="card">
           <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> কনটেন্ট সারাংশ</h3>
           <div class="quickList">
             <div class="quickRow"><span class="dot"></span> <b id="qlNews">0টি</b> সংবাদ প্রকাশিত আছে</div>
             <div class="quickRow"><span class="dot"></span> <b id="qlFaq">0টি</b> FAQ প্রশ্ন প্রকাশিত আছে</div>
             <div class="quickRow"><span class="dot"></span> <b id="qlPartners">0টি</b> সহযোগী প্রতিষ্ঠান তালিকাভুক্ত</div>
+            <div class="quickRow"><span class="dot"></span> <b id="qlSponsors">0টি</b> স্পনসর তালিকাভুক্ত</div>
+            <div class="quickRow"><span class="dot"></span> <b id="qlLikes">0</b> মোট লাইক (সব সংবাদ মিলিয়ে, লাইভ)</div>
             <div class="quickRow"><span class="dot"></span> <b id="qlGallery">0টি</b> ছবি গ্যালারিতে আছে</div>
           </div>
         </div>
@@ -859,12 +1053,72 @@
         <div id="listPartners" class="partnerGrid"></div>
       </section>
 
+      <!-- ============ LAYOUT / ORDER ============ -->
+      <section class="panel" data-panel="layout">
+        <div class="panelHead">
+          <div><h2>পেজ ও সেকশন ক্রম</h2><p>কোনটির পর কোনটি থাকবে — উপরে/নিচে তীর দিয়ে সরান, সুইচ দিয়ে দেখান বা লুকান। প্রতিটি পরিবর্তন সঙ্গে সঙ্গে সেভ হয়ে পাবলিক সাইটে চলে যায়।</p></div>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-bars" aria-hidden="true"></i> মেনু / পেজের ক্রম</h3>
+          <p class="cardNote">ওয়েবসাইটের উপরের মেনু, মোবাইল মেনু ও ফুটারের লিংক — সবখানে এই ক্রম কাজ করবে। লুকানো পেজ মেনুতে দেখাবে না (সরাসরি লিংকে খোলা যাবে)।</p>
+          <div class="orderList" id="listNavOrder"></div>
+          <div class="saveBar"><button type="button" class="btn" data-order-reset="navOrder"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> ডিফল্ট ক্রমে ফিরুন</button></div>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-house" aria-hidden="true"></i> হোম পেজের সেকশন ক্রম</h3>
+          <p class="cardNote">হোম পেজে সেকশনগুলো যে ক্রমে দেখাবে। স্পনসর সেকশনও এখানে সরানো যায়। সবার শেষে রাখলে ফুটারের ঠিক উপরে সব পেজেই দেখাবে; মাঝে সরালে শুধু হোম পেজের সেই জায়গায় দেখাবে।</p>
+          <div class="orderList" id="listHomeOrder"></div>
+          <div class="saveBar"><button type="button" class="btn" data-order-reset="homeOrder"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> ডিফল্ট ক্রমে ফিরুন</button></div>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-heading" aria-hidden="true"></i> সেকশনের শিরোনাম ও ছোট বর্ণনা</h3>
+          <p class="cardNote">হোম পেজের প্রতিটি সেকশনের শিরোনাম ও নিচের ছোট বর্ণনা এখান থেকে বদলান। বর্ণনা ফাঁকা রাখলে সেটি দেখাবে না।</p>
+          <form class="formGrid" data-scalar-form>
+            <div class="field"><label>সাম্প্রতিক রক্তদান — শিরোনাম</label><input type="text" class="textInput" data-key="secTitle_gallery"></div>
+            <div class="field"><label>সাম্প্রতিক রক্তদান — ছোট বর্ণনা</label><input type="text" class="textInput" data-key="secSub_gallery"></div>
+            <div class="field"><label>আমরা কারা — শিরোনাম</label><input type="text" class="textInput" data-key="aboutTitle"></div>
+            <div class="field"><label>আমরা কারা — ছোট বর্ণনা</label><textarea class="textArea" data-key="aboutText" rows="2"></textarea></div>
+            <div class="field"><label>আমরা যা নিশ্চিত করি — শিরোনাম</label><input type="text" class="textInput" data-key="secTitle_features"></div>
+            <div class="field"><label>আমরা যা নিশ্চিত করি — ছোট বর্ণনা</label><input type="text" class="textInput" data-key="secSub_features"></div>
+            <div class="field"><label>আমাদের টিম — শিরোনাম</label><input type="text" class="textInput" data-key="secTitle_team"></div>
+            <div class="field"><label>আমাদের টিম — ছোট বর্ণনা</label><input type="text" class="textInput" data-key="secSub_team"></div>
+            <div class="field"><label>প্রশ্ন ও উত্তর — শিরোনাম</label><input type="text" class="textInput" data-key="secTitle_faq"></div>
+            <div class="field"><label>প্রশ্ন ও উত্তর — ছোট বর্ণনা</label><input type="text" class="textInput" data-key="secSub_faq"></div>
+            <div class="field"><label>সহযোগী প্রতিষ্ঠান — শিরোনাম</label><input type="text" class="textInput" data-key="secTitle_partners"></div>
+            <div class="field"><label>সহযোগী প্রতিষ্ঠান — ছোট বর্ণনা</label><input type="text" class="textInput" data-key="secSub_partners"></div>
+            <div class="field"><label>স্পনসর — শিরোনাম</label><input type="text" class="textInput" data-key="sponsorHeading"></div>
+            <div class="field"><label>স্পনসর — ছোট বর্ণনা</label><input type="text" class="textInput" data-key="sponsorSubtitle"></div>
+            <div class="field"><label>CTA (আহ্বান) — শিরোনাম</label><input type="text" class="textInput" data-key="ctaHeading"></div>
+          </form>
+          <div class="saveBar"><span class="savedNote">সংরক্ষণ হয়েছে ✓</span><button type="button" class="btn primary" data-save-scalar><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> সংরক্ষণ করুন</button></div>
+        </div>
+      </section>
+
+      <!-- ============ SPONSORS ============ -->
+      <section class="panel" data-panel="sponsors">
+        <div class="panelHead">
+          <div><h2>স্পনসর</h2><p>স্পনসরদের লোগো, নাম, ক্যাটাগরি ও ওয়েবসাইট লিংক। পাবলিক সাইটে সবার নিচে ক্যাটাগরি অনুযায়ী (প্রধান → গোল্ড → সিলভার → সহায়ক) দেখানো হবে।</p></div>
+          <button type="button" class="btn primary" data-add-item="sponsor"><i class="fa-solid fa-plus" aria-hidden="true"></i> নতুন স্পনসর যোগ করুন</button>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-heading" aria-hidden="true"></i> সেকশনের শিরোনাম</h3>
+          <form class="formGrid" data-scalar-form>
+            <div class="field"><label>শিরোনাম</label><input type="text" class="textInput" data-key="sponsorHeading"></div>
+            <div class="field"><label>ছোট বর্ণনা</label><input type="text" class="textInput" data-key="sponsorSubtitle"></div>
+          </form>
+          <div class="saveBar"><span class="savedNote">সংরক্ষণ হয়েছে ✓</span><button type="button" class="btn primary" data-save-scalar><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> সংরক্ষণ করুন</button></div>
+        </div>
+        <div id="listSponsors" class="partnerGrid"></div>
+      </section>
+
       <!-- ============ DONATION RECORDS ============ -->
       <section class="panel" data-panel="donations">
         <div class="panelHead">
           <div><h2>ডোনেশন রেকর্ড</h2><p>ডোনেশন নাম্বার দিয়ে সার্চযোগ্য রেকর্ড — নাম, রক্তের গ্রুপ, হাসপাতাল ইত্যাদি।</p></div>
-          <button type="button" class="btn primary" data-add-item="donationRecord"><i class="fa-solid fa-plus" aria-hidden="true"></i> নতুন রেকর্ড যোগ করুন</button>
+          <button type="button" class="btn primary" data-add-item="donationRecord"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> নতুন ডোনার / রেকর্ড যোগ করুন</button>
         </div>
+        <div class="donSummary" id="donSummary"></div>
+        <div class="chipRow" id="donChips"></div>
         <div class="tableToolbar">
           <div class="searchBox"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="text" id="donationSearchBox" placeholder="নাম, নাম্বার বা হাসপাতাল দিয়ে খুঁজুন…"></div>
         </div>
@@ -1138,6 +1392,8 @@ const IMAGE_CROP_CONFIG = {
   contactPhoto3:        { displayW: 76,   displayH: 76,  scale: 3, shape: "rounded", label: "কলিং কার্ড ছবি ৩" },
   "team.photo":         { displayW: 114,  displayH: 114, scale: 3, shape: "circle",  label: "টিম সদস্যের ছবি" },
   "partner.logo":       { displayW: 78,   displayH: 78,  scale: 3, shape: "circle",  label: "সহযোগীর লোগো" },
+  /* স্পনসরের লোগো ক্রপ ছাড়াই পুরো থাকে (চওড়া/লম্বা যেকোনো লোগো) */
+  "sponsor.logo":       { free: true, maxSide: 900, label: "স্পনসরের লোগো" },
   "donationRecord.image": { displayW: 300, displayH: 300, scale: 2, shape: "rect",   label: "ডোনেশন রেকর্ড ছবি" },
   "galleryPhoto.src":   { displayW: 356,  displayH: 356, scale: 2, shape: "rect",    label: "গ্যালারি ছবি", note: "প্রতি ৪টির ১টি ঘর লম্বা — সেখানে মাঝের অংশ দেখা যায়" },
   "news.newsImage":     { displayW: 240,  displayH: 240, scale: 2, shape: "rect",    label: "সংবাদের থাম্বনেইল" },
@@ -1459,7 +1715,7 @@ cropModalOverlay.addEventListener("click", e => { if (e.target === cropModalOver
    DATA MODEL — same shape as the public site's landingPage node
    ============================================================ */
 const DEFAULT_LANDING = {
-  siteName: "Blood Network Baraikhali", siteVersion: "1.0.0",
+  siteName: "Blood Network Baraikhali", siteVersion: "11-Nov-2026",
   importantNotice: "", importantNoticeActive: false,
   heroTitle: "প্রতিটি ফোঁটা রক্ত, একটি নতুন জীবনের গল্প",
   heroSubtitle: "জরুরি মুহূর্তে নির্ভরযোগ্য রক্তদাতা খুঁজে পাওয়ার সবচেয়ে সহজ উপায়। বিনামূল্যে ও স্বেচ্ছাসেবী রক্তদাতাদের নেটওয়ার্কে আজই যুক্ত হোন, জীবন বাঁচাতে হাত বাড়ান।",
@@ -1471,6 +1727,13 @@ const DEFAULT_LANDING = {
   feature2Title: "জরুরি সাড়া", feature2Text: "ব্লাড গ্রুপ ও এলাকা অনুযায়ী মুহূর্তেই কাছাকাছি রক্তদাতা খুঁজে বের করা যায়, একদম ফ্রি-তে।",
   feature3Title: "সহজ ও বিনামূল্যে", feature3Text: "কোনো সাইনআপ ফি বা লুকানো খরচ নেই — যে কেউ রক্তদাতা হতে বা খুঁজতে পারেন সম্পূর্ণ বিনামূল্যে।",
   team: [], faqs: [], partners: [], news: [], hospitals: [],
+  sponsors: [], navOrder: [], homeOrder: [],
+  secTitle_gallery: "সাম্প্রতিক রক্তদান", secSub_gallery: "",
+  secTitle_features: "আমরা যা নিশ্চিত করি", secSub_features: "",
+  secTitle_team: "যাদের নিয়ে আমরা", secSub_team: "স্বেচ্ছাসেবার মানসিকতা নিয়ে যারা প্রতিদিন জীবন বাঁচাতে কাজ করছেন",
+  secTitle_faq: "প্রশ্ন ও উত্তর", secSub_faq: "",
+  secTitle_partners: "আমাদের সহযোগী প্রতিষ্ঠান", secSub_partners: "",
+  sponsorHeading: "আমাদের স্পনসর", sponsorSubtitle: "যাদের সহযোগিতায় আমরা মানুষের পাশে দাঁড়াতে পারছি",
   processStepsRecipient: [], processStepsDonor: [],
   contactName1: "নাম ১", contactPhone1: "01XXXXXXXXX",
   contactPhoto1: "", contactWhatsapp1: "", contactMessenger1: "",
@@ -1484,6 +1747,7 @@ const DEFAULT_LANDING = {
 let landingData = Object.assign({}, DEFAULT_LANDING);
 let donorsCount = 0;
 let visitorCount = 0;
+let newsLikes = {};   // newsLikes/{newsId} = মোট লাইক (লাইভ)
 
 const EMPTY_LIST_MARKER = { _empty: true };
 function toArrayField(v) {
@@ -1499,6 +1763,9 @@ function normalizeLandingData() {
   landingData.partners = toArrayField(landingData.partners);
   landingData.news = toArrayField(landingData.news);
   landingData.hospitals = toArrayField(landingData.hospitals);
+  landingData.sponsors = toArrayField(landingData.sponsors);
+  landingData.navOrder = toArrayField(landingData.navOrder);
+  landingData.homeOrder = toArrayField(landingData.homeOrder);
   landingData.processStepsRecipient = toArrayField(landingData.processStepsRecipient);
   landingData.processStepsDonor = toArrayField(landingData.processStepsDonor);
 }
@@ -1555,6 +1822,8 @@ const PANEL_TITLES = {
   team: ["টিম সদস্য", "টিম মেম্বার ব্যবস্থাপনা"],
   faq: ["প্রায়শই জিজ্ঞাসিত প্রশ্ন", "FAQ ব্যবস্থাপনা"],
   partners: ["সহযোগী প্রতিষ্ঠান", "পার্টনার লোগো ব্যবস্থাপনা"],
+  sponsors: ["স্পনসর", "স্পনসর যোগ, ক্যাটাগরি ও ক্রম ব্যবস্থাপনা"],
+  layout: ["পেজ ও সেকশন ক্রম", "মেনুর পেজ ও হোমের সেকশন কোনটির পর কোনটি থাকবে"],
   donations: ["ডোনেশন রেকর্ড", "সার্চযোগ্য ডোনেশন রেকর্ড ব্যবস্থাপনা"],
   gallery: ["গ্যালারি", "হোমপেজ গ্যালারি ছবি ব্যবস্থাপনা"],
   "calling-card": ["কলিং কার্ড", "জরুরি যোগাযোগ নাম্বার ও কলিং কার্ড ছবি ব্যবস্থাপনা"],
@@ -1614,12 +1883,14 @@ function renderNewsList() {
         (n.newsImage ? '<img src="' + escAttr(n.newsImage) + '" alt="" style="max-height:90px;">' : '<i class="fa-solid fa-newspaper" aria-hidden="true"></i>') +
       '</div>' +
       '<div class="name" style="margin-bottom:2px;">' + escHtml(n.title || "শিরোনামহীন") + '</div>' +
-      '<div style="font-size:11px; color:var(--muted); margin-bottom:10px;">' + escHtml(n.category || "সাধারণ") + ' · ' + newsDateLabel(n.date) + ((n.reportImages && Object.keys(n.reportImages).length) ? ' · <span style="color:var(--crimson);font-weight:700;"><i class="fa-solid fa-images" aria-hidden="true"></i> রিপোর্ট</span>' : '') + '</div>' +
+      '<div style="font-size:11px; color:var(--muted); margin-bottom:10px;">' + escHtml(n.category || "সাধারণ") + ' · ' + newsDateLabel(n.date) + ' · <span style="color:var(--crimson);font-weight:700;"><i class="fa-solid fa-heart" aria-hidden="true"></i> ' + (parseInt(newsLikes[n.id], 10) || 0) + '</span>' + ((n.reportImages && Object.keys(n.reportImages).length) ? ' · <span style="color:var(--crimson);font-weight:700;"><i class="fa-solid fa-images" aria-hidden="true"></i> রিপোর্ট</span>' : '') + '</div>' +
       '<div class="acts"><button class="iconBtn" data-edit-item="news" data-id="' + n.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div></div>'
     ).join("");
   }
   document.getElementById("navBadgeNews").textContent = landingData.news.length;
   document.getElementById("qlNews").textContent = landingData.news.length + "টি";
+  const qlLikes = document.getElementById("qlLikes");
+  if (qlLikes) qlLikes.textContent = landingData.news.reduce((s, n) => s + (parseInt(newsLikes[n.id], 10) || 0), 0);
 }
 
 function renderHospitalsList() {
@@ -1644,10 +1915,10 @@ function renderTeamList() {
     el.innerHTML = emptyStateHtml("fa-users", "এখনও কোনো টিম সদস্য যোগ করা হয়নি");
   } else {
     el.innerHTML = '<table class="dataTable"><thead><tr><th></th><th>নাম</th><th>পদবি</th><th></th></tr></thead><tbody>' +
-      landingData.team.map(m =>
+      landingData.team.map((m, i, arr) =>
         '<tr><td><div class="rowThumb">' + (m.photo ? '<img src="' + escAttr(m.photo) + '" alt="">' : '<i class="fa-solid fa-user" aria-hidden="true"></i>') + '</div></td>' +
         '<td><b>' + escHtml(m.name) + '</b></td><td>' + escHtml(m.role) + '</td>' +
-        '<td class="rowActions"><button class="iconBtn" data-edit-item="team" data-id="' + m.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></td></tr>'
+        '<td class="rowActions">' + moveBtnsHtml("team", m.id, i, arr.length, false) + '<button class="iconBtn" data-edit-item="team" data-id="' + m.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></td></tr>'
       ).join("") + '</tbody></table>';
   }
   document.getElementById("navBadgeTeam").textContent = landingData.team.length;
@@ -1674,15 +1945,158 @@ function renderPartnersList() {
   if (!landingData.partners.length) {
     el.innerHTML = emptyStateHtml("fa-handshake", "এখনও কোনো সহযোগী যোগ করা হয়নি");
   } else {
-    el.innerHTML = landingData.partners.map(p =>
+    el.innerHTML = landingData.partners.map((p, i, arr) =>
       '<div class="partnerCard"><div class="logoWrap">' + (p.logo ? '<img src="' + escAttr(p.logo) + '" alt="">' : '<i class="fa-solid fa-building" aria-hidden="true"></i>') + '</div>' +
       '<div class="name">' + escHtml(p.name) + '</div>' +
-      '<div class="acts"><button class="iconBtn" data-edit-item="partner" data-id="' + p.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div></div>'
+      '<div class="acts">' + moveBtnsHtml("partners", p.id, i, arr.length, true) + '<button class="iconBtn" data-edit-item="partner" data-id="' + p.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div></div>'
     ).join("");
   }
   document.getElementById("navBadgePartners").textContent = landingData.partners.length;
   document.getElementById("qlPartners").textContent = landingData.partners.length + "টি";
 }
+
+/* ============================================================
+   ক্রম পরিবর্তনের বাটন (উপরে/নিচে বা বামে/ডানে) — টিম, সহযোগী, স্পনসর
+   ============================================================ */
+function moveBtnsHtml(listKey, id, i, len, horiz) {
+  const prevIcon = horiz ? "fa-arrow-left" : "fa-arrow-up";
+  const nextIcon = horiz ? "fa-arrow-right" : "fa-arrow-down";
+  return '<button type="button" class="iconBtn" data-move-item data-list="' + listKey + '" data-id="' + escAttr(id) + '" data-dir="-1" title="আগে সরান"' + (i === 0 ? " disabled" : "") + '><i class="fa-solid ' + prevIcon + '" aria-hidden="true"></i></button>' +
+         '<button type="button" class="iconBtn" data-move-item data-list="' + listKey + '" data-id="' + escAttr(id) + '" data-dir="1" title="পরে সরান"' + (i === len - 1 ? " disabled" : "") + '><i class="fa-solid ' + nextIcon + '" aria-hidden="true"></i></button>';
+}
+
+const SPONSOR_TIER_CLASS = { "প্রধান স্পনসর": "t-main", "গোল্ড স্পনসর": "t-gold", "সিলভার স্পনসর": "t-silver", "সহায়ক স্পনসর": "t-support" };
+function renderSponsorsList() {
+  const el = document.getElementById("listSponsors");
+  if (!landingData.sponsors.length) {
+    el.innerHTML = emptyStateHtml("fa-award", "এখনও কোনো স্পনসর যোগ করা হয়নি");
+  } else {
+    el.innerHTML = landingData.sponsors.map((s, i, arr) =>
+      '<div class="partnerCard"><span class="tierTag ' + (SPONSOR_TIER_CLASS[s.tier] || "t-support") + '">' + escHtml(s.tier || "সহায়ক স্পনসর") + '</span>' +
+      '<div class="logoWrap">' + (s.logo ? '<img src="' + escAttr(s.logo) + '" alt="">' : '<i class="fa-solid fa-building" aria-hidden="true"></i>') + '</div>' +
+      '<div class="name">' + escHtml(s.name || "নামহীন") + '</div>' +
+      '<div class="acts">' + moveBtnsHtml("sponsors", s.id, i, arr.length, true) +
+      '<button class="iconBtn" data-edit-item="sponsor" data-id="' + s.id + '"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div></div>'
+    ).join("");
+  }
+  const badge = document.getElementById("navBadgeSponsors");
+  if (badge) badge.textContent = landingData.sponsors.length;
+  const ql = document.getElementById("qlSponsors");
+  if (ql) ql.textContent = landingData.sponsors.length + "টি";
+}
+
+/* ---- পেজ ও সেকশন ক্রম ---- */
+const NAV_ITEMS = {
+  "process":     { label: "কীভাবে কাজ করে",        icon: "fa-route" },
+  "blood-group": { label: "রক্তের গ্রুপ চার্ট",     icon: "fa-droplet" },
+  "donations":   { label: "সকল রক্তদান রেকর্ড",     icon: "fa-clipboard-list" },
+  "news":        { label: "সংবাদ",                  icon: "fa-newspaper" },
+  "hospitals":   { label: "হাসপাতাল",               icon: "fa-hospital" }
+};
+const HOME_ITEMS = {
+  stats:      { label: "পরিসংখ্যান ও ব্লাড গ্রুপ কাউন্ট",     icon: "fa-chart-simple" },
+  heroDonor:  { label: "আজকের হিরো (২৪ ঘণ্টা)",              icon: "fa-medal" },
+  gallery:    { label: "সাম্প্রতিক রক্তদান (ছবির গ্যালারি)",  icon: "fa-images" },
+  about:      { label: "আমরা কারা",                           icon: "fa-circle-info" },
+  features:   { label: "আমরা যা নিশ্চিত করি",                  icon: "fa-shield-heart" },
+  team:       { label: "আমাদের টিম",                          icon: "fa-users" },
+  faq:        { label: "প্রশ্ন ও উত্তর (FAQ)",                 icon: "fa-circle-question" },
+  partners:   { label: "সহযোগী প্রতিষ্ঠান",                    icon: "fa-handshake" },
+  cta:        { label: "রক্তদাতা হওয়ার আহ্বান (CTA)",         icon: "fa-heart-pulse" },
+  sponsors:   { label: "স্পনসর",                               icon: "fa-award" }
+};
+const ORDER_META = {
+  navOrder:  { items: NAV_ITEMS,  defaults: Object.keys(NAV_ITEMS),  boxId: "listNavOrder" },
+  homeOrder: { items: HOME_ITEMS, defaults: Object.keys(HOME_ITEMS), boxId: "listHomeOrder" }
+};
+function mergeOrder(saved, defaults) {
+  const out = [], seen = {};
+  toArrayField(saved).forEach(it => {
+    const key = it && (typeof it === "string" ? it : it.key);
+    if (!key || seen[key] || defaults.indexOf(key) === -1) return;
+    seen[key] = true;
+    out.push({ key: key, visible: !(it && typeof it === "object" && it.visible === false) });
+  });
+  defaults.forEach(k => { if (!seen[k]) out.push({ key: k, visible: true }); });
+  return out;
+}
+function currentOrder(which) { return mergeOrder(landingData[which], ORDER_META[which].defaults); }
+
+function fixedOrderRow(num, icon, label, note) {
+  return '<div class="orderItem fixed"><span class="orderNum">' + num + '</span><span class="orderIcon"><i class="fa-solid ' + icon + '" aria-hidden="true"></i></span>' +
+         '<span class="orderLabel">' + label + '</span><span class="orderLock"><i class="fa-solid fa-lock" aria-hidden="true"></i>' + note + '</span></div>';
+}
+function orderRowsHtml(which, offset) {
+  const meta = ORDER_META[which];
+  const order = currentOrder(which);
+  return order.map((o, i) => {
+    const it = meta.items[o.key];
+    return '<div class="orderItem' + (o.visible ? "" : " off") + '">' +
+      '<span class="orderNum">' + (i + 1 + offset) + '</span>' +
+      '<span class="orderIcon"><i class="fa-solid ' + it.icon + '" aria-hidden="true"></i></span>' +
+      '<span class="orderLabel">' + escHtml(it.label) + '</span>' +
+      '<label class="orderSwitch" title="মেনু/পেজে দেখান বা লুকান"><input type="checkbox" data-order-toggle="' + which + '" data-key="' + o.key + '"' + (o.visible ? " checked" : "") + '><span></span></label>' +
+      '<div class="orderMoves">' +
+        '<button type="button" class="iconBtn" data-order-move="' + which + '" data-key="' + o.key + '" data-dir="-1" title="উপরে সরান"' + (i === 0 ? " disabled" : "") + '><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>' +
+        '<button type="button" class="iconBtn" data-order-move="' + which + '" data-key="' + o.key + '" data-dir="1" title="নিচে সরান"' + (i === order.length - 1 ? " disabled" : "") + '><i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>' +
+      '</div></div>';
+  }).join("");
+}
+function renderLayoutPanel() {
+  const navBox = document.getElementById("listNavOrder");
+  const homeBox = document.getElementById("listHomeOrder");
+  if (navBox) navBox.innerHTML = fixedOrderRow(1, "fa-house", "হোম", "সবসময় প্রথমে") + orderRowsHtml("navOrder", 1);
+  if (homeBox) homeBox.innerHTML = orderRowsHtml("homeOrder", 0);
+}
+function saveOrder(which, order) {
+  landingData[which] = order;
+  if (firebaseAvailable && landingPageRef) {
+    landingPageRef.child(which).set(order).catch(err => { console.log(which + " save failed:", err); showToast("সংরক্ষণ করা যায়নি, আবার চেষ্টা করুন"); });
+  }
+  renderLayoutPanel();
+  showToast("ক্রম সংরক্ষণ করা হয়েছে");
+}
+document.addEventListener("click", e => {
+  const mv = e.target.closest("[data-order-move]");
+  if (mv && !mv.disabled) {
+    const which = mv.getAttribute("data-order-move"), key = mv.getAttribute("data-key"), dir = parseInt(mv.getAttribute("data-dir"), 10);
+    const order = currentOrder(which);
+    const i = order.findIndex(o => o.key === key), j = i + dir;
+    if (i < 0 || j < 0 || j >= order.length) return;
+    const tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+    saveOrder(which, order);
+    return;
+  }
+  const rs = e.target.closest("[data-order-reset]");
+  if (rs) {
+    const which = rs.getAttribute("data-order-reset");
+    if (!window.confirm("ডিফল্ট ক্রমে ফিরে যেতে চান? (সব সেকশন আবার দৃশ্যমান হবে)")) return;
+    saveOrder(which, ORDER_META[which].defaults.map(k => ({ key: k, visible: true })));
+    return;
+  }
+  const mi = e.target.closest("[data-move-item]");
+  if (mi && !mi.disabled) {
+    const key = mi.getAttribute("data-list"), id = mi.getAttribute("data-id"), dir = parseInt(mi.getAttribute("data-dir"), 10);
+    const list = landingData[key];
+    if (!Array.isArray(list)) return;
+    const i = list.findIndex(x => x.id === id), j = i + dir;
+    if (i < 0 || j < 0 || j >= list.length) return;
+    const tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+    syncListToFirebase(key, list);
+    renderListByKey(key);
+    showToast("ক্রম সংরক্ষণ করা হয়েছে");
+  }
+});
+document.addEventListener("change", e => {
+  const t = e.target.closest ? e.target.closest("[data-order-toggle]") : null;
+  if (!t) return;
+  const which = t.getAttribute("data-order-toggle"), key = t.getAttribute("data-key");
+  const order = currentOrder(which);
+  const it = order.find(o => o.key === key);
+  if (!it) return;
+  it.visible = t.checked;
+  saveOrder(which, order);
+});
 
 function renderGalleryList() {
   const el = document.getElementById("listGallery");
@@ -1726,6 +2140,7 @@ function donationSerialMap() {
   return m;
 }
 let donationSearchTerm = "";
+let donationGroupFilter = "";
 function renderDonationsList() {
   const el = document.getElementById("listDonations");
   let records = landingData.donationRecords;
@@ -1737,6 +2152,8 @@ function renderDonationsList() {
       (r.hospitalName || "").toLowerCase().includes(q)
     );
   }
+  if (donationGroupFilter) records = records.filter(r => r.bloodGroup === donationGroupFilter);
+  renderDonationSummary();
   // সর্বশেষ রক্তদানের তারিখ অনুযায়ী: সবচেয়ে নতুন উপরে, সবচেয়ে পুরনো সবার নিচে
   const serialMap = donationSerialMap();
   records = records.slice().sort((a, b) => donationDateCompare(b, a));
@@ -1771,9 +2188,210 @@ function emptyStateHtml(icon, msg) {
 function renderDashboardStats() {
   document.getElementById("statTotalDonors").textContent = donorsCount || 0;
   document.getElementById("statTotalDonations").textContent = landingData.donationRecords.reduce((sum, r) => sum + (parseInt(r.visitCount, 10) || 1), 0);
-  document.getElementById("statVisitors").textContent = visitorCount || 0;
+  document.getElementById("statVisitors").textContent = Number(totalViews || 0).toLocaleString("en-US");
   document.getElementById("statTeamCount").textContent = landingData.team.length;
+  renderDashCharts();
 }
+
+
+/* ============================================================
+   PREMIUM DASHBOARD CHARTS (inline SVG, no external library)
+   ============================================================ */
+const BG_COLORS = {"A+":"#9E1B32","A-":"#D2556B","B+":"#C9A25B","B-":"#E3C88F","AB+":"#3F7A5D","AB-":"#7FB89A","O+":"#2F4B7C","O-":"#7C93C3"};
+const BN_MONTHS = ["জানু","ফেব্রু","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টে","অক্টো","নভে","ডিসে"];
+function drRecords() { return (landingData && landingData.donationRecords) || []; }
+function drDate(r) { const d = new Date(r.date || r.donationDate || ""); return isNaN(d) ? null : d; }
+
+function renderTrendChart() {
+  const el = document.getElementById("chTrend"); if (!el) return;
+  const now = new Date(), months = [];
+  for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); months.push({ y: d.getFullYear(), m: d.getMonth(), n: 0 }); }
+  drRecords().forEach(r => { const d = drDate(r); if (!d) return; const x = months.find(o => o.y === d.getFullYear() && o.m === d.getMonth()); if (x) x.n++; });
+  const total = months.reduce((a, b) => a + b.n, 0);
+  document.getElementById("chTrendTag").textContent = total + " টি";
+  const W = 640, H = 260, pl = 34, pr = 14, pt = 16, pb = 30;
+  const max = Math.max(4, ...months.map(o => o.n)), top = Math.ceil(max / 4) * 4;
+  const x = i => pl + i * ((W - pl - pr) / 11), y = v => pt + (H - pt - pb) * (1 - v / top);
+  let grid = "", i2;
+  for (i2 = 0; i2 <= 4; i2++) { const v = top / 4 * i2; grid += '<line class="gridLine" x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y(v) + '" y2="' + y(v) + '"/><text class="axisTxt" x="' + (pl - 8) + '" y="' + (y(v) + 3) + '" text-anchor="end">' + v + '</text>'; }
+  const pts = months.map((o, i) => [x(i), y(o.n)]);
+  let path = "M" + pts[0][0] + "," + pts[0][1];
+  for (let i = 1; i < pts.length; i++) { const cx = (pts[i - 1][0] + pts[i][0]) / 2; path += " C" + cx + "," + pts[i - 1][1] + " " + cx + "," + pts[i][1] + " " + pts[i][0] + "," + pts[i][1]; }
+  const area = path + " L" + pts[pts.length - 1][0] + "," + (H - pb) + " L" + pts[0][0] + "," + (H - pb) + " Z";
+  const labels = months.map((o, i) => '<text class="axisTxt" x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + BN_MONTHS[o.m] + '</text>').join("");
+  const dots = months.map((o, i) => '<circle class="areaDot" cx="' + pts[i][0] + '" cy="' + pts[i][1] + '" r="4.5"><title>' + BN_MONTHS[o.m] + " " + o.y + ": " + o.n + 'টি</title></circle>').join("");
+  el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="মাসিক রক্তদান ট্রেন্ড"><defs>' +
+    '<linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9E1B32" stop-opacity=".28"/><stop offset="1" stop-color="#9E1B32" stop-opacity="0"/></linearGradient>' +
+    '<linearGradient id="gLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C9A25B"/><stop offset="1" stop-color="#9E1B32"/></linearGradient></defs>' +
+    grid + '<path d="' + area + '" fill="url(#gArea)"/><path class="areaLine" d="' + path + '"/>' + dots + labels + '</svg>';
+}
+
+function renderGroupChart() {
+  const el = document.getElementById("chGroups"); if (!el) return;
+  const rec = drRecords(), counts = {};
+  rec.forEach(r => { if (r.bloodGroup) counts[r.bloodGroup] = (counts[r.bloodGroup] || 0) + 1; });
+  const keys = Object.keys(BG_COLORS).filter(k => counts[k]), total = keys.reduce((a, k) => a + counts[k], 0);
+  if (!total) { el.innerHTML = '<div class="chartEmpty">এখনও কোনো ডাটা নেই</div>'; return; }
+  const R = 62, C = 2 * Math.PI * R; let off = 0, segs = "";
+  keys.forEach(k => { const len = counts[k] / total * C; segs += '<circle cx="85" cy="85" r="' + R + '" fill="none" stroke="' + BG_COLORS[k] + '" stroke-width="22" stroke-dasharray="' + Math.max(len - 2, 0) + " " + (C - Math.max(len - 2, 0)) + '" stroke-dashoffset="' + (-off) + '" transform="rotate(-90 85 85)"><title>' + k + ": " + counts[k] + '</title></circle>'; off += len; });
+  el.innerHTML = '<svg viewBox="0 0 170 170"><circle cx="85" cy="85" r="' + R + '" fill="none" stroke="#F1EAE3" stroke-width="22"/>' + segs +
+    '<text class="donutCenter" x="85" y="88" text-anchor="middle">' + total + '</text><text class="donutSub" x="85" y="104" text-anchor="middle">মোট রেকর্ড</text></svg>' +
+    '<div class="legend">' + keys.map(k => '<div><i style="background:' + BG_COLORS[k] + '"></i>' + k + '<b>' + counts[k] + '</b></div>').join("") + '</div>';
+}
+
+function renderHospitalChart() {
+  const el = document.getElementById("chHospitals"); if (!el) return;
+  const c = {}; drRecords().forEach(r => { const h = (r.hospitalName || "").trim(); if (h) c[h] = (c[h] || 0) + 1; });
+  const list = Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  if (!list.length) { el.innerHTML = '<div class="chartEmpty">এখনও কোনো ডাটা নেই</div>'; return; }
+  const m = list[0][1];
+  el.innerHTML = list.map(([n, v]) => '<div class="hBarRow"><div class="top"><span>' + escHtml(n) + '</span><span>' + v + '</span></div><div class="hBarTrack"><div class="hBarFill" style="width:' + (v / m * 100) + '%"></div></div></div>').join("");
+}
+
+function renderRecentList() {
+  const el = document.getElementById("chRecent"); if (!el) return;
+  const list = drRecords().slice().sort((a, b) => donationDateCompare(b, a)).slice(0, 6);
+  if (!list.length) { el.innerHTML = '<div class="chartEmpty">এখনও কোনো রেকর্ড নেই</div>'; return; }
+  el.innerHTML = list.map(r => '<div class="recentItem"><div class="rowThumb">' + (r.image && !r.hidePhoto ? '<img src="' + escAttr(r.image) + '" alt="">' : '<i class="fa-solid fa-user"></i>') + '</div>' +
+    '<div class="meta"><b>' + escHtml(r.name) + '</b><span>#' + escHtml(r.donationNo) + ' · ' + escHtml(r.hospitalName || "—") + (r.date ? ' · ' + escHtml(r.date) : '') + '</span></div>' +
+    '<div class="bloodGroupPill" style="min-width:40px">' + escHtml(r.bloodGroup) + '</div></div>').join("");
+}
+
+/* ============================================================
+   LIVE VIEWERS + VIEWS GRAPH
+   siteStats/live (এখন যারা আছে), siteStats/totalViews, siteStats/daily/{date}
+   ============================================================ */
+let liveEntries = {}, totalViews = 0, dailyViews = {}, viewsRange = 30, serverOffset = 0;
+function bdDateKey(ts) { return new Date((ts || Date.now()) + 6 * 3600 * 1000).toISOString().slice(0, 10); }
+
+function renderLiveCount() {
+  const cutoff = Date.now() + serverOffset - 5 * 60 * 1000;
+  let n = 0;
+  Object.keys(liveEntries || {}).forEach(k => { if ((parseInt(liveEntries[k], 10) || 0) >= cutoff) n++; });
+  ["liveNowNum", "liveNowTop"].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = n; });
+}
+setInterval(renderLiveCount, 30000);
+
+const BN_DIGITS = ["০","১","২","৩","৪","৫","৬","৭","৮","৯"];
+function bnNum(n) { return String(n).replace(/[0-9]/g, d => BN_DIGITS[d]); }
+function viewsRangeLabel(N) { return N === 365 ? "শেষ ১ বছরে" : N === 1825 ? "শেষ ৫ বছরে" : "শেষ " + N + " দিনে"; }
+
+/* রেঞ্জ অনুযায়ী পয়েন্ট বানায়: ৭/৩০ দিন = প্রতিদিন, ১ বছর = ১২ মাস, ৫ বছর = ৬০ মাস */
+function buildViewsPoints(N) {
+  const now = Date.now(), pts = [];
+  if (N <= 30) {
+    for (let i = N - 1; i >= 0; i--) {
+      const key = bdDateKey(now - i * 86400000), p = key.split("-"), m = parseInt(p[1], 10) - 1, d = parseInt(p[2], 10);
+      pts.push({ n: parseInt(dailyViews[key], 10) || 0, label: d + " " + BN_MONTHS[m], tip: d + " " + BN_MONTHS[m] + " " + p[0], show: ((N - 1 - i) % (N <= 7 ? 1 : 5)) === 0 });
+    }
+    return pts;
+  }
+  const M = N === 365 ? 12 : 60, cur = bdDateKey(now).split("-");
+  const cy = parseInt(cur[0], 10), cm = parseInt(cur[1], 10) - 1;
+  const sums = {};
+  Object.keys(dailyViews).forEach(k => { const mk = k.slice(0, 7); sums[mk] = (sums[mk] || 0) + (parseInt(dailyViews[k], 10) || 0); });
+  for (let i = M - 1; i >= 0; i--) {
+    const idx = cy * 12 + cm - i, y = Math.floor(idx / 12), m = idx % 12;
+    const mk = y + "-" + String(m + 1).padStart(2, "0");
+    pts.push({ n: sums[mk] || 0, label: M === 12 ? BN_MONTHS[m] : BN_MONTHS[m] + " " + String(y).slice(2), tip: BN_MONTHS[m] + " " + y, show: M === 12 ? true : (i % 6 === 0) });
+  }
+  return pts;
+}
+
+function renderViewsChart() {
+  const el = document.getElementById("chViews"); if (!el) return;
+  const N = viewsRange, pts0 = buildViewsPoints(N), L = pts0.length;
+  const sum = pts0.reduce((a, b) => a + b.n, 0);
+  const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  const fmt = v => Number(v || 0).toLocaleString("en-US");
+  set("viewsTotalNum", fmt(totalViews));
+  set("statVisitors", fmt(totalViews));
+  set("viewsTodayNum", fmt(parseInt(dailyViews[bdDateKey()], 10) || 0));
+  set("viewsRangeNum", fmt(sum));
+  set("viewsRangeLbl", viewsRangeLabel(N));
+  document.querySelectorAll("[data-views-range]").forEach(b => b.classList.toggle("on", parseInt(b.getAttribute("data-views-range"), 10) === N));
+
+  const W = 900, H = 260, pl = 42, pr = 14, pt = 16, pb = 30;
+  const max = Math.max(4, ...pts0.map(o => o.n)), top = Math.ceil(max / 4) * 4;
+  const x = i => pl + i * ((W - pl - pr) / (L - 1)), y = v => pt + (H - pt - pb) * (1 - v / top);
+  let grid = "";
+  for (let i = 0; i <= 4; i++) { const v = top / 4 * i; grid += '<line class="gridLine" x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y(v) + '" y2="' + y(v) + '"/><text class="axisTxt" x="' + (pl - 8) + '" y="' + (y(v) + 3) + '" text-anchor="end">' + v + '</text>'; }
+  const pts = pts0.map((o, i) => [x(i), y(o.n)]);
+  let path = "M" + pts[0][0] + "," + pts[0][1];
+  for (let i = 1; i < pts.length; i++) { const cx = (pts[i - 1][0] + pts[i][0]) / 2; path += " C" + cx + "," + pts[i - 1][1] + " " + cx + "," + pts[i][1] + " " + pts[i][0] + "," + pts[i][1]; }
+  const area = path + " L" + pts[pts.length - 1][0] + "," + (H - pb) + " L" + pts[0][0] + "," + (H - pb) + " Z";
+  const labels = pts0.map((o, i) => o.show ? '<text class="axisTxt" x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + o.label + '</text>' : "").join("");
+  const r = L <= 12 ? 4.5 : L <= 31 ? 3.2 : 2.4;
+  const dots = pts0.map((o, i) => '<circle class="areaDot" cx="' + pts[i][0] + '" cy="' + pts[i][1] + '" r="' + r + '"><title>' + o.tip + ": " + o.n + ' ভিউ</title></circle>').join("");
+  el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="ওয়েবসাইট ভিউ গ্রাফ"><defs>' +
+    '<linearGradient id="gvArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9E1B32" stop-opacity=".28"/><stop offset="1" stop-color="#9E1B32" stop-opacity="0"/></linearGradient>' +
+    '<linearGradient id="gvLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C9A25B"/><stop offset="1" stop-color="#9E1B32"/></linearGradient></defs>' +
+    grid + '<path d="' + area + '" fill="url(#gvArea)"/><path d="' + path + '" fill="none" stroke="url(#gvLine)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' + dots + labels + '</svg>';
+}
+
+/* ৭/৩০ দিনের জন্য শেষ ৩১টি দিন; ১ বছর/৫ বছরের জন্য শেষ ১৮৩০টি দিন (শুধু তখনই নামানো হয়) */
+let dailyRef = null;
+function attachDailyListener() {
+  if (!firebaseAvailable || !db) return;
+  if (dailyRef) { dailyRef.off(); dailyRef = null; }
+  const limit = viewsRange > 30 ? 1830 : 31;
+  dailyRef = db.ref("siteStats/daily").orderByKey().limitToLast(limit);
+  dailyRef.on("value", snap => { dailyViews = snap.val() || {}; renderViewsChart(); },
+    err => console.log("daily views read failed:", err));
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest ? e.target.closest("[data-views-range]") : null;
+  if (!b) return;
+  const prev = viewsRange;
+  viewsRange = parseInt(b.getAttribute("data-views-range"), 10) || 30;
+  if ((prev > 30) !== (viewsRange > 30)) attachDailyListener(); // ডাটার পরিমাণ বদলাতে হলে আবার নামাও
+  renderViewsChart();
+});
+
+/* একবারের মাইগ্রেশন: আগের মোট ভিজিটর (visitorCount) নতুন মোট ভিউ-এর সাথে যোগ হয়ে যায়।
+   siteStats/viewsMigrated ফ্ল্যাগ থাকায় এটি আর কখনো দ্বিতীয়বার চলবে না। */
+function migrateOldViewsOnce() {
+  if (!firebaseAvailable || !db) return;
+  const flagRef = db.ref("siteStats/viewsMigrated");
+  flagRef.transaction(cur => (cur ? undefined : true), (err, committed) => {
+    if (err || !committed) return;
+    db.ref("siteStats/visitorCount").once("value")
+      .then(snap => {
+        const old = parseInt(snap.val(), 10) || 0;
+        return db.ref("siteStats/totalViews").transaction(c => (c || 0) + old);
+      })
+      .then(() => showToast("আগের ভিউ নতুন মোট ভিউ-এর সাথে যোগ হয়েছে"))
+      .catch(e => { console.log("views migration failed:", e); flagRef.set(null); });
+  }, false);
+}
+
+function renderDashCharts() { try { renderTrendChart(); renderGroupChart(); renderHospitalChart(); renderRecentList(); } catch (e) { console.log("chart render failed", e); } try { renderViewsChart(); } catch (e) { console.log("views chart failed", e); } }
+
+function renderDonationSummary() {
+  const box = document.getElementById("donSummary"), chips = document.getElementById("donChips"); if (!box) return;
+  const rec = drRecords(), now = new Date();
+  const thisMonth = rec.filter(r => { const d = drDate(r); return d && d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth(); }).length;
+  const times = rec.reduce((s, r) => s + (parseInt(r.visitCount, 10) || 1), 0);
+  const hosp = new Set(rec.map(r => (r.hospitalName || "").trim()).filter(Boolean)).size;
+  const sums = [
+    ["fa-clipboard-list", "var(--crimson-tint)", "var(--crimson)", rec.length, "মোট ডোনার রেকর্ড"],
+    ["fa-droplet", "var(--sage-tint)", "var(--sage)", times, "মোট রক্তদান"],
+    ["fa-calendar-check", "var(--amber-tint)", "var(--amber)", thisMonth, "এই মাসে"],
+    ["fa-hospital", "var(--crimson-tint)", "var(--crimson)", hosp, "হাসপাতাল / স্থান"]
+  ];
+  box.innerHTML = sums.map(a => '<div class="donSum"><div class="ic" style="background:' + a[1] + ';color:' + a[2] + '"><i class="fa-solid ' + a[0] + '"></i></div><div><b>' + a[3] + '</b><span>' + a[4] + '</span></div></div>').join("");
+  chips.innerHTML = ["", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(g => '<button type="button" class="chip' + (donationGroupFilter === g ? ' on' : '') + '" data-grp="' + g + '">' + (g || "সব গ্রুপ") + '</button>').join("");
+}
+document.addEventListener("click", e => {
+  const c = e.target.closest && e.target.closest(".chip[data-grp]");
+  if (c) { donationGroupFilter = c.getAttribute("data-grp"); renderDonationsList(); }
+});
+document.getElementById("heroViewDonations").addEventListener("click", () => goToPanel("donations"));
+document.getElementById("recentViewAll").addEventListener("click", () => goToPanel("donations"));
+document.getElementById("heroAddDonor").addEventListener("click", () => {
+  goToPanel("donations");
+  const b = document.querySelector('.panel[data-panel="donations"] [data-add-item="donationRecord"]'); if (b) b.click();
+});
 
 function renderAll() {
   normalizeLandingData();
@@ -1784,6 +2402,8 @@ function renderAll() {
   renderTeamList();
   renderFaqList();
   renderPartnersList();
+  renderSponsorsList();
+  renderLayoutPanel();
   renderGalleryList();
   renderStepsLists();
   renderDonationsList();
@@ -1872,9 +2492,11 @@ const SCHEMAS = {
       { key: "photo", label: "ছবি", type: "image" },
       { key: "name", label: "নাম", type: "text" },
       { key: "role", label: "পদবি", type: "text" },
-      { key: "bio", label: "সংক্ষিপ্ত পরিচিতি", type: "textarea" }
+      { key: "bio", label: "সংক্ষিপ্ত পরিচিতি (কার্ডে ৩ লাইন পর্যন্ত দেখাবে)", type: "textarea" },
+      { key: "phone", label: "ফোন নম্বর (ঐচ্ছিক) — কার্ডে কল বাটন আসবে", type: "text" },
+      { key: "facebook", label: "ফেসবুক লিংক (ঐচ্ছিক)", type: "text" }
     ],
-    blank: () => ({ id: genId(), name: "", role: "", bio: "", photo: "" })
+    blank: () => ({ id: genId(), name: "", role: "", bio: "", photo: "", phone: "", facebook: "" })
   },
   faq: {
     title: "প্রশ্ন", listKey: "faqs",
@@ -1891,6 +2513,18 @@ const SCHEMAS = {
       { key: "name", label: "প্রতিষ্ঠানের নাম", type: "text" }
     ],
     blank: () => ({ id: genId(), name: "", logo: "" })
+  },
+  sponsor: {
+    title: "স্পনসর", listKey: "sponsors",
+    fields: [
+      { key: "logo", label: "লোগো (পুরো ছবি থাকবে, ক্রপ হবে না)", type: "image" },
+      { key: "name", label: "স্পনসরের নাম *", type: "text" },
+      { key: "tier", label: "ক্যাটাগরি", type: "select", options: ["প্রধান স্পনসর", "গোল্ড স্পনসর", "সিলভার স্পনসর", "সহায়ক স্পনসর"] },
+      { key: "kind", label: "কী স্পনসর করছেন (যেমন: রক্ত পরীক্ষার সামগ্রী, আর্থিক সহায়তা)", type: "text" },
+      { key: "tagline", label: "পরিচিতি (সংক্ষিপ্ত — কার্ডে দেখাবে)", type: "textarea" },
+      { key: "link", label: "ওয়েবসাইট / ফেসবুক লিংক (ঐচ্ছিক)", type: "text" }
+    ],
+    blank: () => ({ id: genId(), name: "", logo: "", tier: "সহায়ক স্পনসর", kind: "", tagline: "", link: "" })
   },
   stepRecipient: {
     title: "ধাপ", listKey: "processStepsRecipient",
@@ -2046,6 +2680,7 @@ function renderListByKey(listKey) {
   else if (listKey === "team") renderTeamList();
   else if (listKey === "faqs") renderFaqList();
   else if (listKey === "partners") renderPartnersList();
+  else if (listKey === "sponsors") renderSponsorsList();
   else if (listKey === "donationPhotos") renderGalleryList();
   else if (listKey === "donationRecords") renderDonationsList();
   else if (listKey === "processStepsRecipient" || listKey === "processStepsDonor") renderStepsLists();
@@ -2078,6 +2713,21 @@ document.getElementById("itemModalSaveBtn").addEventListener("click", () => {
     // no hard validation beyond donation records — keep it forgiving for a professional but low-friction UI
   }
 
+  /* লিংক ফিল্ড: স্কিম না থাকলে https:// যোগ হয়; http:// কে https:// করা হয় (পাবলিক সাইটে শুধু https লিংক চলে) */
+  const fixUrl = u => {
+    u = String(u || "").trim();
+    if (!u) return "";
+    if (/^http:\/\//i.test(u)) return "https://" + u.slice(7);
+    if (/^https:\/\//i.test(u)) return u;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(u)) return "";   // javascript:, data: ইত্যাদি বাদ
+    return "https://" + u.replace(/^\/+/, "");
+  };
+  if (currentModalType === "sponsor") {
+    if (!currentModalItem.name) { showToast("স্পনসরের নাম লিখুন"); return; }
+    currentModalItem.link = fixUrl(currentModalItem.link);
+  }
+  if (currentModalType === "team") currentModalItem.facebook = fixUrl(currentModalItem.facebook);
+
   const list = landingData[schema.listKey];
   const idx = list.findIndex(x => x.id === currentModalItem.id);
   if (currentModalType === "donationRecord" && idx < 0) {
@@ -2089,6 +2739,7 @@ document.getElementById("itemModalSaveBtn").addEventListener("click", () => {
     if (!window.confirm("ডোনার কার্ড সাধারণত list.html-এ রক্তদান যোগ করলেই নিজে থেকে তৈরি/আপডেট হয়। তবুও ম্যানুয়াল কার্ড বানাবেন?")) return;
   }
   if (idx >= 0) list[idx] = currentModalItem;
+  else if (currentModalType === "team" || currentModalType === "sponsor") list.push(currentModalItem); // ক্রম গুরুত্বপূর্ণ — নতুনটি শেষে, তীর দিয়ে সরানো যাবে
   else list.unshift(currentModalItem);
 
   syncListToFirebase(schema.listKey, list);
@@ -2330,10 +2981,24 @@ function initFirebase() {
       renderDashboardStats();
     });
 
+    /* লাইভ দর্শক ও ভিউ গ্রাফ */
+    db.ref(".info/serverTimeOffset").on("value", snap => { serverOffset = snap.val() || 0; renderLiveCount(); });
+    db.ref("siteStats/live").on("value", snap => { liveEntries = snap.val() || {}; renderLiveCount(); },
+      err => console.log("Live read failed:", err));
+    db.ref("siteStats/totalViews").on("value", snap => { totalViews = snap.val() || 0; renderViewsChart(); },
+      err => console.log("totalViews read failed:", err));
+    attachDailyListener();
+
+    /* সংবাদের লাইক — লাইভ: পাবলিক সাইটে কেউ লাইক দিলেই এখানে সংখ্যা বদলে যায় */
+    db.ref("newsLikes").on("value", snapshot => {
+      newsLikes = snapshot.val() || {};
+      renderNewsList();
+    });
+
     auth.onAuthStateChanged(user => {
       loaderScreen.style.opacity = "0";
       setTimeout(() => { loaderScreen.style.display = "none"; }, 320);
-      if (user) showDashboard(user);
+      if (user) { showDashboard(user); migrateOldViewsOnce(); }
       else showLogin();
     });
   } catch (err) {
